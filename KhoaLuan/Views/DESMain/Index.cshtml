@@ -1,0 +1,567 @@
+﻿@model KhoaLuan.Models.DesInputModel
+
+@{
+    ViewBag.Title = "DES - Mã hóa & Giải mã";
+    Layout = "~/Views/Shared/Layout.cshtml";
+    var steps = ViewBag.StepDetails as List<List<string>>;
+    bool isEncryption = ViewBag.IsEncryption != null && (bool)ViewBag.IsEncryption;
+    int[] IP = new int[] {
+        58, 50, 42, 34, 26, 18, 10, 2,
+        60, 52, 44, 36, 28, 20, 12, 4,
+        62, 54, 46, 38, 30, 22, 14, 6,
+        64, 56, 48, 40, 32, 24, 16, 8,
+        57, 49, 41, 33, 25, 17, 9, 1,
+        59, 51, 43, 35, 27, 19, 11, 3,
+        61, 53, 45, 37, 29, 21, 13, 5,
+        63, 55, 47, 39, 31, 23, 15, 7
+    };
+    int[] FP = new int[] {
+        40, 8, 48, 16, 56, 24, 64, 32,
+        39, 7, 47, 15, 55, 23, 63, 31,
+        38, 6, 46, 14, 54, 22, 62, 30,
+        37, 5, 45, 13, 53, 21, 61, 29,
+        36, 4, 44, 12, 52, 20, 60, 28,
+        35, 3, 43, 11, 51, 19, 59, 27,
+        34, 2, 42, 10, 50, 18, 58, 26,
+        33, 1, 41, 9, 49, 17, 57, 25
+    };
+    int[] E = ViewBag.E as int[];
+    int[] P = ViewBag.P as int[];
+    int[,,] SBoxes = ViewBag.SBoxes as int[,,];
+}
+
+<style>
+    .des-container {
+        width: 90%;
+        max-width: none;
+        margin: auto;
+        background: #fff;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: row;
+        gap: 30px;
+        margin-top: 70px;
+    }
+
+    .left-panel {
+        flex: 1;
+        min-width: 300px;
+        max-height: calc(100vh - 100px);
+        overflow-y: auto;
+        position: sticky;
+        top: 70px;
+    }
+
+    .right-panel {
+        flex: 2;
+        min-width: 400px;
+    }
+
+    .des-container h2 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 30px;
+    }
+
+    label {
+        font-weight: bold;
+        display: block;
+        margin-top: 15px;
+        margin-bottom: 5px;
+    }
+
+    input[type="text"], select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+    }
+
+    input[type="submit"] {
+        margin-top: 20px;
+        background-color: #28a745;
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        width: 100%;
+        font-weight: bold;
+    }
+
+        input[type="submit"]:hover {
+            background-color: #218838;
+        }
+
+    .output-section {
+        margin-top: 30px;
+    }
+
+        .output-section h3 {
+            color: #007bff;
+        }
+
+    .binary-blocks-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+
+    .binary-block {
+        background: #f8f9fa;
+        padding: 10px 15px;
+        border-radius: 5px;
+        font-family: monospace;
+        white-space: pre-wrap;
+        word-break: break-word;
+        flex-shrink: 0;
+        border: 1px solid #ccc;
+    }
+
+    .step-details-container {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .step-detail {
+        background-color: #f1f1f1;
+        padding: 15px;
+        border-left: 5px solid #007bff;
+        border-radius: 5px;
+    }
+
+        .step-detail h4 {
+            margin-bottom: 10px;
+            color: #007bff;
+        }
+
+    .step-line {
+        font-family: monospace;
+        margin-left: 10px;
+        margin-bottom: 5px;
+        white-space: pre-wrap;
+        word-break: break-word;
+    }
+
+    .table-container {
+        margin-bottom: 20px;
+    }
+
+        .table-container h4 {
+            color: #007bff;
+            margin-bottom: 10px;
+        }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: monospace;
+    }
+
+    table, th, td {
+        border: 1px solid #ccc;
+    }
+
+    th, td {
+        padding: 5px;
+        text-align: center;
+    }
+
+    .alert {
+        margin-top: 15px;
+        padding: 10px;
+        border-radius: 5px;
+    }
+
+    .alert-danger {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+    }
+</style>
+
+<script>
+    function updateInputField() {
+        var action = document.getElementById('Action').value;
+        var inputFormatSelect = document.getElementById('InputFormat');
+        var inputLabel = document.getElementById('inputLabel');
+        var inputField = document.getElementById('inputText');
+        var errorDiv = document.getElementById('inputTextError');
+
+        // Xóa các tùy chọn hiện tại trong InputFormat
+        inputFormatSelect.innerHTML = '';
+
+        // Thêm các tùy chọn phù hợp dựa trên Action
+        if (action === 'Encrypt') {
+            inputLabel.innerText = 'Plaintext:';
+            inputField.name = 'PlainText';
+            var options = [
+                { value: 'ASCII', text: 'ASCII' },
+                { value: 'Hex', text: 'Hex' },
+                { value: 'Binary', text: 'Nhị phân' }
+            ];
+        } else {
+            inputLabel.innerText = 'Ciphertext:';
+            inputField.name = 'CipherText';
+            var options = [
+                { value: 'Hex', text: 'Hex' },
+                { value: 'Binary', text: 'Nhị phân' }
+            ];
+        }
+
+        // Cập nhật dropdown InputFormat
+        options.forEach(function (opt) {
+            var option = document.createElement('option');
+            option.value = opt.value;
+            option.text = opt.text;
+            inputFormatSelect.appendChild(option);
+        });
+
+        // Cập nhật placeholder và nhãn
+        updateInputFormat();
+    }
+
+    function updateInputFormat() {
+        var action = document.getElementById('Action').value;
+        var inputFormat = document.getElementById('InputFormat').value;
+        var inputLabel = document.getElementById('inputLabel');
+        var inputField = document.getElementById('inputText');
+        var errorDiv = document.getElementById('inputTextError');
+
+        inputLabel.innerText = (action === 'Encrypt' ? 'Plaintext (' : 'Ciphertext (') +
+            (inputFormat === 'ASCII' ? 'ASCII' : inputFormat === 'Hex' ? 'Hex' : 'Nhị phân') + '):';
+        inputField.placeholder = inputFormat === 'ASCII' ? 'Nhập văn bản ASCII (ký tự từ khoảng trắng đến ~)' :
+            inputFormat === 'Hex' ? 'Nhập chuỗi hex (0-9, A-F)' + (action === 'Decrypt' ? ', bội của 2' : '') :
+                'Nhập chuỗi nhị phân (0, 1)' + (action === 'Decrypt' ? ', bội của 64 bit' : '');
+        inputField.required = true;
+        errorDiv.style.display = 'none';
+    }
+
+    function updateKeyFormat() {
+        var keyFormat = document.getElementById('KeyFormat').value;
+        var keyField = document.getElementById('keyText');
+        var keyErrorDiv = document.getElementById('keyTextError');
+        var keyLabel = document.getElementById('keyLabel');
+
+        keyLabel.innerText = 'Khóa (' + (keyFormat === 'ASCII' ? 'ASCII' : keyFormat === 'Hex' ? 'Hex' : 'Nhị phân') + '):';
+        keyField.placeholder = keyFormat === 'ASCII' ? 'Nhập văn bản ASCII (ký tự từ khoảng trắng đến ~)' :
+            keyFormat === 'Hex' ? 'Nhập chuỗi hex (0-9, A-F, tối đa 16 ký tự)' :
+                'Nhập chuỗi nhị phân (0, 1, tối đa 64 bit)';
+        keyErrorDiv.style.display = 'none';
+    }
+
+    function validateInput() {
+        var action = document.getElementById('Action').value;
+        var inputFormat = document.getElementById('InputFormat').value;
+        var inputText = document.getElementById('inputText').value;
+        var keyFormat = document.getElementById('KeyFormat').value;
+        var keyText = document.getElementById('keyText').value;
+        var inputErrorDiv = document.getElementById('inputTextError');
+        var keyErrorDiv = document.getElementById('keyTextError');
+
+        // Reset error messages
+        inputErrorDiv.innerHTML = '';
+        inputErrorDiv.style.display = 'none';
+        keyErrorDiv.innerHTML = '';
+        keyErrorDiv.style.display = 'none';
+
+        // Validate Input (PlainText/CipherText)
+        if (!inputText) {
+            inputErrorDiv.innerHTML = 'Vui lòng nhập ' + (action === 'Encrypt' ? 'Plaintext!' : 'Ciphertext!');
+            inputErrorDiv.style.display = 'block';
+            return false;
+        }
+
+        if (inputFormat === 'ASCII' && action === 'Encrypt') {
+            var asciiPattern = /^[ -~]+$/;
+            if (!asciiPattern.test(inputText)) {
+                inputErrorDiv.innerHTML = 'Plaintext không hợp lệ! Vui lòng nhập văn bản ASCII (ký tự từ khoảng trắng đến ~).';
+                inputErrorDiv.style.display = 'block';
+                return false;
+            }
+        } else if (inputFormat === 'Hex') {
+            var hexPattern = /^[0-9A-Fa-f]+$/;
+            if (!hexPattern.test(inputText)) {
+                inputErrorDiv.innerHTML = (action === 'Encrypt' ? 'Plaintext' : 'Ciphertext') + ' không hợp lệ! Vui lòng nhập chuỗi hex (0-9, A-F).';
+                inputErrorDiv.style.display = 'block';
+                return false;
+            }
+            if (action === 'Decrypt' && inputText.length % 2 !== 0) {
+                inputErrorDiv.innerHTML = 'Ciphertext không hợp lệ! Chuỗi hex phải có độ dài là bội của 2.';
+                inputErrorDiv.style.display = 'block';
+                return false;
+            }
+        } else if (inputFormat === 'Binary') {
+            var binaryPattern = /^[01]+$/;
+            if (!binaryPattern.test(inputText)) {
+                inputErrorDiv.innerHTML = (action === 'Encrypt' ? 'Plaintext' : 'Ciphertext') + ' không hợp lệ! Vui lòng nhập chuỗi nhị phân (0, 1).';
+                inputErrorDiv.style.display = 'block';
+                return false;
+            }
+            if (action === 'Decrypt' && inputText.length % 64 !== 0) {
+                inputErrorDiv.innerHTML = 'Ciphertext không hợp lệ! Chuỗi nhị phân phải có độ dài là bội của 64 bit.';
+                inputErrorDiv.style.display = 'block';
+                return false;
+            }
+        }
+
+        // Validate Key
+        if (!keyText) {
+            keyErrorDiv.innerHTML = 'Vui lòng nhập khóa!';
+            keyErrorDiv.style.display = 'block';
+            return false;
+        }
+
+        if (keyFormat === 'ASCII') {
+            var asciiPattern = /^[ -~]+$/;
+            if (!asciiPattern.test(keyText)) {
+                keyErrorDiv.innerHTML = 'Khóa không hợp lệ! Vui lòng nhập văn bản ASCII (ký tự từ khoảng trắng đến ~).';
+                keyErrorDiv.style.display = 'block';
+                return false;
+            }
+        } else if (keyFormat === 'Hex') {
+            var hexPattern = /^[0-9A-Fa-f]+$/;
+            if (!hexPattern.test(keyText) || keyText.length > 16) {
+                keyErrorDiv.innerHTML = 'Khóa không hợp lệ! Vui lòng nhập chuỗi hex (0-9, A-F, tối đa 16 ký tự).';
+                keyErrorDiv.style.display = 'block';
+                return false;
+            }
+        } else if (keyFormat === 'Binary') {
+            var binaryPattern = /^[01]+$/;
+            if (!binaryPattern.test(keyText) || keyText.length > 64) {
+                keyErrorDiv.innerHTML = 'Khóa không hợp lệ! Vui lòng nhập chuỗi nhị phân (0, 1, tối đa 64 bit).';
+                keyErrorDiv.style.display = 'block';
+                return false;
+            }
+        }
+
+        return true;
+    }
+</script>
+
+<div class="des-container">
+    <div class="left-panel">
+        <h3>Các bảng thuật toán DES</h3>
+        <div class="table-container">
+            <h4>Bảng hoán vị ban đầu (IP)</h4>
+            <table>
+                @for (int i = 0; i < 8; i++)
+                {
+                    <tr>
+                        @for (int j = 0; j < 8; j++)
+                        {
+                            <td>@IP[i * 8 + j]</td>
+                        }
+                    </tr>
+                }
+            </table>
+        </div>
+        <div class="table-container">
+            <h4>Bảng mở rộng (E)</h4>
+            <table>
+                @for (int i = 0; i < 8; i++)
+                {
+                    <tr>
+                        @for (int j = 0; j < 6; j++)
+                        {
+                            <td>@E[i * 6 + j]</td>
+                        }
+                    </tr>
+                }
+            </table>
+        </div>
+        <div class="table-container">
+            <h4>Bảng hoán vị P</h4>
+            <table>
+                @for (int i = 0; i < 4; i++)
+                {
+                    <tr>
+                        @for (int j = 0; j < 8; j++)
+                        {
+                            <td>@P[i * 8 + j]</td>
+                        }
+                    </tr>
+                }
+            </table>
+        </div>
+        @for (int s = 0; s < 8; s++)
+        {
+            <div class="table-container">
+                <h4>Bảng S-Box @(s + 1) (S@(s + 1))</h4>
+                <table>
+                    @for (int i = 0; i < 4; i++)
+                    {
+                        <tr>
+                            @for (int j = 0; j < 16; j++)
+                            {
+                                <td>@SBoxes[s, i, j]</td>
+                            }
+                        </tr>
+                    }
+                </table>
+            </div>
+        }
+        <div class="table-container">
+            <h4>Bảng hoán vị kết thúc IP-1 (FP)</h4>
+            <table>
+                @for (int i = 0; i < 8; i++)
+                {
+                    <tr>
+                        @for (int j = 0; j < 8; j++)
+                        {
+                            <td>@FP[i * 8 + j]</td>
+                        }
+                    </tr>
+                }
+            </table>
+        </div>
+    </div>
+
+    <div class="right-panel">
+        <h2>Thuật toán DES - Mã hóa & Giải mã</h2>
+
+        @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+        {
+            <div class="alert alert-danger">@ViewBag.ErrorMessage</div>
+        }
+
+        @using (Html.BeginForm("Index", "DESMain", FormMethod.Post, new { onsubmit = "return validateInput();" }))
+        {
+            <div>
+                <label>Hành động:</label>
+                @Html.DropDownListFor(m => m.Action, new SelectList(new[]
+                {
+                    new { Value = "Encrypt", Text = "Mã hóa" },
+                    new { Value = "Decrypt", Text = "Giải mã" }
+                }, "Value", "Text"), new { @id = "Action", @onchange = "updateInputField()" })
+            </div>
+
+            <div>
+                <label>Định dạng đầu vào:</label>
+                @Html.DropDownListFor(m => m.InputFormat, new SelectList(new[]
+                {
+                    new { Value = "ASCII", Text = "ASCII" },
+                    new { Value = "Hex", Text = "Hex" },
+                    new { Value = "Binary", Text = "Nhị phân" }
+                }, "Value", "Text"), new { @id = "InputFormat", @onchange = "updateInputFormat()" })
+            </div>
+
+            <div>
+                <label id="inputLabel">@(Model.Action == "Encrypt" ? "Plaintext" : "Ciphertext") (@(Model.InputFormat ?? "ASCII")):</label>
+                <input type="text" id="inputText" name="@(Model.Action == "Encrypt" ? "PlainText" : "CipherText")"
+                       value="@(Model.Action == "Encrypt" ? Model.PlainText : Model.CipherText)"
+                       placeholder="@(Model.InputFormat == "ASCII" ? "Nhập văn bản ASCII (ký tự từ khoảng trắng đến ~)" :
+                                    Model.InputFormat == "Hex" ? "Nhập chuỗi hex (0-9, A-F)" + (Model.Action == "Decrypt" ? ", bội của 2" : "") :
+                                    "Nhập chuỗi nhị phân (0, 1)" + (Model.Action == "Decrypt" ? ", bội của 64 bit" : ""))"
+                       required />
+                <div id="inputTextError" class="alert alert-danger" style="display: none;"></div>
+            </div>
+
+            <div>
+                <label>Định dạng khóa:</label>
+                @Html.DropDownListFor(m => m.KeyFormat, new SelectList(new[]
+                {
+                    new { Value = "ASCII", Text = "ASCII" },
+                    new { Value = "Hex", Text = "Hex" },
+                    new { Value = "Binary", Text = "Nhị phân" }
+                }, "Value", "Text"), new { @id = "KeyFormat", @onchange = "updateKeyFormat()" })
+            </div>
+
+            <div>
+                <label id="keyLabel">Khóa (@(Model.KeyFormat ?? "ASCII")):</label>
+                @Html.TextBoxFor(m => m.Key, new
+                {
+                    @id = "keyText",
+                    @placeholder = (Model.KeyFormat == "ASCII" ? "Nhập văn bản ASCII (ký tự từ khoảng trắng đến ~)" :
+                                                                                   Model.KeyFormat == "Hex" ? "Nhập chuỗi hex (0-9, A-F, tối đa 16 ký tự)" :
+                                                                                   "Nhập chuỗi nhị phân (0, 1, tối đa 64 bit)"),
+                    @required = "required"
+                })
+                <div id="keyTextError" class="alert alert-danger" style="display: none;"></div>
+            </div>
+
+            <div>
+                <input type="submit" value="Xử lý dữ liệu" />
+            </div>
+        }
+
+        @if (ViewBag.Blocks != null)
+        {
+            <div class="output-section">
+                <h3>@(isEncryption ? "Các khối nhị phân 64-bit (Plaintext):" : "Các khối nhị phân 64-bit (Ciphertext):")</h3>
+                <div class="binary-blocks-container">
+                    @foreach (string block in ViewBag.Blocks as List<string>)
+                    {
+                        <div class="binary-block">@block</div>
+                    }
+                </div>
+
+                <h3>Khóa nhị phân 64-bit:</h3>
+                <div class="binary-block">@ViewBag.Key</div>
+
+                @if (ViewBag.CombinedBinaryOutput != null)
+                {
+                    <h3>Kết quả nhị phân:</h3>
+                    <div class="binary-block">@ViewBag.CombinedBinaryOutput</div>
+                }
+
+                @if (ViewBag.HexOutput != null)
+                {
+                    <h3>Kết quả Hex:</h3>
+                    <div class="binary-block">@ViewBag.HexOutput</div>
+                }
+
+                @if (!isEncryption && ViewBag.FinalOutput != null)
+                {
+                    <h3>Kết quả Ascii:</h3>
+                    <div class="binary-block">@ViewBag.FinalOutput</div>
+                }
+
+                @if (steps != null)
+                {
+                    <h3>Chi tiết xử lý toàn bộ DES:</h3>
+                    <div class="step-details-container">
+                        @{
+                            int blockIndex = 1;
+                        }
+                        @foreach (var blockSteps in steps)
+                        {
+                            <div class="step-detail">
+                                <h4>Khối @blockIndex:</h4>
+                                @foreach (string step in blockSteps)
+                                {
+                                    string modifiedStep = step;
+                                    if (step.StartsWith("1. ") || step.StartsWith("2. ") || step.StartsWith("17. ") || step.StartsWith("18. "))
+                                    {
+                                        modifiedStep = step.Replace("1. ", "Bước 1: ").Replace("2. ", "Bước 2: ")
+                                                       .Replace("17. ", "Bước 17: ").Replace("18. ", "Bước 18: ");
+                                    }
+                                    else if (System.Text.RegularExpressions.Regex.IsMatch(step, @"^\s*\d+\.\d+\s"))
+                                    {
+                                        modifiedStep = System.Text.RegularExpressions.Regex.Replace(step, @"^\s*(\d+)\.(\d+)\s", m => $"   Bước {m.Groups[1].Value}.{m.Groups[2].Value}: ");
+                                    }
+                                    <div class="step-line">@modifiedStep</div>
+                                }
+                            </div>
+                            blockIndex++;
+                        }
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>
+
+<script>
+    // Khởi tạo giao diện khi tải trang
+    document.addEventListener('DOMContentLoaded', function () {
+        updateInputField();
+        updateInputFormat();
+        updateKeyFormat();
+    });
+</script>

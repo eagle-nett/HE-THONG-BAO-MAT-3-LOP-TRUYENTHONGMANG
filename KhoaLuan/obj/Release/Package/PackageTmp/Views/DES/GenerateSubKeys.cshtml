@@ -1,0 +1,293 @@
+﻿@{
+    ViewBag.Title = "Tạo 16 khóa con DES";
+    Layout = "~/Views/Shared/Layout.cshtml";
+}
+
+<div class="mt-5">
+    <div class="row">
+        <div class="card shadow-lg w-100">
+            <div class="card-header bg-dark text-white text-center">
+                <h3><i class="bi bi-key"></i> Tạo 16 khóa con DES</h3>
+            </div>
+            <div class="card-body">
+                <form method="post" action="/DES/GenerateSubKeys">
+                    <div class="mb-3">
+                        <label class="form-label"><strong>Loại đầu vào:</strong></label>
+                        <select name="inputType" class="form-select mb-2" required>
+                            <option value="" disabled selected>Chọn loại đầu vào</option>
+                            <option value="binary">Chuỗi nhị phân 64-bit</option>
+                            <option value="hex">Chuỗi hexadecimal 16 ký tự</option>
+                            <option value="ascii">Chuỗi ASCII</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label"><strong>Nhập khóa:</strong></label>
+                        <input type="text" class="form-control" name="inputKey" required placeholder="Nhập khóa (64-bit nhị phân, 16 ký tự hex, hoặc chuỗi ASCII)">
+                    </div>
+                    <button type="submit" class="btn btn-success w-100"><i class="bi bi-play"></i> Tạo khóa con</button>
+                </form>
+
+                @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+                {
+                    <div class="alert alert-danger mt-3">@ViewBag.ErrorMessage</div>
+                }
+                @if (!string.IsNullOrEmpty(ViewBag.WarningMessage))
+                {
+                    <div class="alert alert-warning mt-3">@ViewBag.WarningMessage</div>
+                }
+                @if (!string.IsNullOrEmpty(ViewBag.OriginalBinary))
+                {
+                    <div class="alert alert-info mt-3">
+                        <strong>Chuỗi nhị phân gốc (trước padding):</strong> @ViewBag.OriginalBinary
+                    </div>
+                }
+
+                @if (ViewBag.SubKeys != null)
+                {
+                    <div class="row mt-4">
+                        <!-- Cột bên trái: Kết quả từng bước -->
+                        <div class="col-md-8">
+                            <h5 class="text-center text-primary"><strong>Kết quả từng bước:</strong></h5>
+
+                            <div class="table-responsive">
+                                <table class="table table-bordered text-center">
+                                    <thead class="table-dark text-white">
+                                        <tr>
+                                            <th>Khóa gốc (64-bit)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="text-break">@ViewBag.BinaryKey</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="table-responsive">
+                                <table class="table table-bordered text-center">
+                                    <thead class="table-warning">
+                                        <tr>
+                                            <th>Khóa 56-bit sau PC-1</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="text-break">@ViewBag.Key56</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="table-responsive mt-3">
+                                <table class="table table-bordered text-center">
+                                    <thead class="table-info">
+                                        <tr>
+                                            <th>C0 (28-bit)</th>
+                                            <th>D0 (28-bit)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="text-break">@ViewBag.C0</td>
+                                            <td class="text-break">@ViewBag.D0</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <h5 class="text-center mt-4 text-success"><strong>Chi tiết từng vòng (dịch bit)</strong></h5>
+                            <div class="table-responsive">
+                                <table class="table table-bordered text-center">
+                                    <thead class="table-secondary">
+                                        <tr>
+                                            <th>Vòng</th>
+                                            <th>Cn (sau dịch bit)</th>
+                                            <th>Dn (sau dịch bit)</th>
+                                            <th>Gộp Cn + Dn</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @for (int i = 0; i < 16; i++)
+                                        {
+                                            <tr>
+                                                <td><strong>Vòng @((i + 1))</strong></td>
+                                                <td class="text-break">@ViewBag.CList[i]</td>
+                                                <td class="text-break">@ViewBag.DList[i]</td>
+                                                <td class="text-break">@ViewBag.CList[i]@ViewBag.DList[i]</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <h5 class="text-center mt-4 text-danger"><strong>Khóa sau PC-2</strong></h5>
+                            <div class="table-responsive">
+                                <table class="table table-bordered text-center">
+                                    <thead class="table-success">
+                                        <tr>
+                                            <th>Vòng</th>
+                                            <th>Khóa sau PC-2</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @for (int i = 0; i < 16; i++)
+                                        {
+                                            <tr>
+                                                <td><strong>Vòng @((i + 1))</strong></td>
+                                                <td class="text-break">@ViewBag.SubKeys[i]</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Cột bên phải: Bảng tham chiếu -->
+                        <div class="col-md-4">
+                            <h5 class="text-center text-info"><strong>Bảng tham chiếu:</strong></h5>
+
+                            <!-- Bảng PC-1 -->
+                            <div class="table-responsive">
+                                <table class="table table-bordered text-center">
+                                    <thead class="table-primary">
+                                        <tr>
+                                            <th colspan="7">Bảng PC-1</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @{
+                                            int[] PC1 = new int[] {
+                                                57, 49, 41, 33, 25, 17, 9,
+                                                1, 58, 50, 42, 34, 26, 18,
+                                                10, 2, 59, 51, 43, 35, 27,
+                                                19, 11, 3, 60, 52, 44, 36,
+                                                63, 55, 47, 39, 31, 23, 15,
+                                                7, 62, 54, 46, 38, 30, 22,
+                                                14, 6, 61, 53, 45, 37, 29,
+                                                21, 13, 5, 28, 20, 12, 4
+                                            };
+                                            int count = 0;
+                                            foreach (var num in PC1)
+                                            {
+                                                if (count % 7 == 0)
+                                                {
+                                                    @:<tr>
+                                                    }
+                                                    <td>@num</td>
+                                                    count++;
+                                                    if (count % 7 == 0)
+                                                    {
+                                                    @:</tr>
+                                                }
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Bảng dịch bit (LeftShift) -->
+                            <div class="table-responsive mt-3">
+                                <table class="table table-bordered text-center">
+                                    <thead class="table-primary">
+                                        <tr>
+                                            <th>Vòng</th>
+                                            <th>Số bit dịch trái</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @{
+                                            int[] leftShifts = { 1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 1 };
+                                            for (int i = 0; i < leftShifts.Length; i++)
+                                            {
+                                                <tr>
+                                                    <td>Vòng @(i + 1)</td>
+                                                    <td>@leftShifts[i]</td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Bảng PC-2 -->
+                            <div class="table-responsive mt-3">
+                                <table class="table table-bordered text-center">
+                                    <thead class="table-primary">
+                                        <tr>
+                                            <th colspan="6">Bảng PC-2</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @{
+                                            int[] PC2 = new int[] {
+                                                14, 17, 11, 24, 1, 5,
+                                                3, 28, 15, 6, 21, 10,
+                                                23, 19, 12, 4, 26, 8,
+                                                16, 7, 27, 20, 13, 2,
+                                                41, 52, 31, 37, 47, 55,
+                                                30, 40, 51, 45, 33, 48,
+                                                44, 49, 39, 56, 34, 53,
+                                                46, 42, 50, 36, 29, 32
+                                            };
+                                            count = 0;
+                                            foreach (var num in PC2)
+                                            {
+                                                if (count % 6 == 0)
+                                                {
+                                                    @:<tr>
+                                                    }
+                                                    <td>@num</td>
+                                                    count++;
+                                                    if (count % 6 == 0)
+                                                    {
+                                                    @:</tr>
+                                                }
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border-radius: 15px;
+        overflow: hidden;
+    }
+
+    .table {
+        font-size: 14px;
+    }
+
+    .text-break {
+        word-break: break-all;
+    }
+
+    h5 {
+        margin-top: 20px;
+    }
+
+    .col-md-8, .col-md-4 {
+        padding: 0 15px;
+    }
+
+    .table-responsive {
+        margin-bottom: 20px;
+    }
+
+    .row {
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    .card {
+        margin: 0;
+    }
+</style>

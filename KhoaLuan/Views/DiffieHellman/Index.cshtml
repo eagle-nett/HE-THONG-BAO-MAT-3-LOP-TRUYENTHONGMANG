@@ -1,0 +1,90 @@
+﻿@{
+    ViewBag.Title = "Diffie-Hellman Key Exchange";
+    Layout = "~/Views/Shared/Layout.cshtml";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg">
+                <div class="card-header bg-primary text-white text-center">
+                    <h3>Mô phỏng thuật toán Diffie-Hellman</h3>
+                </div>
+                <div class="card-body">
+                    <!-- Form nhập liệu và tính toán -->
+                    <form method="post" action="/DiffieHellman/Index" class="mb-3">
+                        <div class="mb-3">
+                            <label class="form-label">Số nguyên tố p:</label>
+                            <input type="number" class="form-control" name="p" value="@ViewBag.RandomP" min="2" required>
+                        </div>
+                        @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+                        {
+                            <div class="alert alert-danger mt-3">
+                                <strong>@ViewBag.ErrorMessage</strong>
+                            </div>
+                        }
+                        <div class="mb-3">
+                            <label class="form-label">Cơ số g (căn nguyên tố):</label>
+                            <input type="number" class="form-control" name="g" value="@ViewBag.RandomG" min="2" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Alice chọn số bí mật a:</label>
+                            <input type="number" class="form-control" name="a" min="1" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Bob chọn số bí mật b:</label>
+                            <input type="number" class="form-control" name="b" min="1" required>
+                        </div>
+                        <!-- Hai nút trên cùng một hàng -->
+                        <div class="d-flex justify-content-between gap-2">
+                            <button type="button" class="btn btn-warning flex-grow-1" onclick="document.getElementById('generateForm').submit();">Sinh số ngẫu nhiên</button>
+                            <button type="submit" class="btn btn-success flex-grow-1">Tính toán</button>
+                        </div>
+                    </form>
+
+                    <!-- Form sinh số ngẫu nhiên (ẩn) -->
+                    <form id="generateForm" method="post" action="/DiffieHellman/GenerateRandom" style="display: none;"></form>
+                </div>
+            </div>
+
+            <!-- Hiển thị công thức và kết quả -->
+            @if (ViewBag.AlicePublicKeyFormula != null)
+            {
+                <div class="alert alert-info mt-4">
+                    <h5 class="text-center"><strong>Kết quả:</strong></h5>
+                    <p><strong>Công thức khóa công khai của Alice:</strong></p>
+                    <p class="bg-light p-2 border rounded">@ViewBag.AlicePublicKeyFormula</p>
+
+                    <p><strong>Công thức khóa công khai của Bob:</strong></p>
+                    <p class="bg-light p-2 border rounded">@ViewBag.BobPublicKeyFormula</p>
+
+                    <p><strong>Khóa chung Alice tính được:</strong></p>
+                    <p class="bg-light p-2 border rounded">@ViewBag.SharedKeyAliceFormula</p>
+
+                    <p><strong>Khóa chung Bob tính được:</strong></p>
+                    <p class="bg-light p-2 border rounded">@ViewBag.SharedKeyBobFormula</p>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+    .btn-success, .btn-warning {
+        padding: 10px 20px;
+        font-size: 16px;
+        border-radius: 5px;
+    }
+
+        .btn-success:hover {
+            background-color: #218838;
+        }
+
+        .btn-warning:hover {
+            background-color: #e0a800;
+        }
+
+    .gap-2 {
+        gap: 10px;
+    }
+</style>

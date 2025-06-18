@@ -1,0 +1,42 @@
+﻿@{
+    ViewBag.Title = "Trích xuất 64-bit từ SHA-256";
+    Layout = "~/Views/Shared/Layout.cshtml";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg">
+                <div class="card-header bg-warning text-white text-center">
+                    <h3>Trích xuất 64-bit đầu từ SHA-256</h3>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="/Hash/Extract64Bit">
+                        <div class="mb-3">
+                            <label class="form-label">Nhập chuỗi SHA-256:</label>
+                            <input type="text" class="form-control" name="hashedKey" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Lấy 64-bit đầu tiên</button>
+                    </form>
+
+                    @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+                    {
+                        <div class="alert alert-danger mt-3">@ViewBag.ErrorMessage</div>
+                    }
+
+                    @if (!string.IsNullOrEmpty(ViewBag.First64Bit))
+                    {
+                        <div class="alert alert-info mt-4">
+                            <h5 class="text-center"><strong>Kết quả:</strong></h5>
+                            <p><strong>Chuỗi SHA-256 ban đầu:</strong></p>
+                            <p class="bg-light p-2 border rounded text-break">@ViewBag.OriginalHash</p>
+
+                            <p><strong>64-bit đầu tiên (16 ký tự hex):</strong></p>
+                            <p class="bg-light p-2 border rounded text-break">@ViewBag.First64Bit</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

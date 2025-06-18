@@ -1,0 +1,346 @@
+﻿@{
+    ViewBag.Title = "Giới thiệu về thuật toán DES";
+    Layout = "~/Views/Shared/Layout.cshtml";
+}
+
+<style>
+    .des-container {
+        max-width: 1200px;
+        margin: 40px auto;
+        padding: 30px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+        .des-container h2 {
+            color: #1a2b3c; /* Xanh đen đậm cho tiêu đề cấp cao */
+            margin-bottom: 25px;
+        }
+
+        .des-container h3 {
+            color: #3e5f7a; /* Xanh trung cho tiêu đề cấp trung */
+            margin-top: 25px;
+        }
+
+        .des-container h4 {
+            color: #4a6078; /* Xanh xám nhạt cho tiêu đề cấp thấp */
+            margin-top: 25px;
+        }
+
+        .des-container p, .des-container ul {
+            font-size: 18px;
+            line-height: 1.8;
+            color: #333;
+        }
+
+        .des-container ul {
+            padding-left: 20px;
+        }
+
+        .des-container a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+            .des-container a:hover {
+                text-decoration: underline;
+            }
+
+    .des-image {
+        max-width: 1000px; /* Chiều rộng tối đa */
+        max-width: 100%; /* Responsive với container cha */
+        width: auto; /* Giữ kích thước gốc */
+        height: auto; /* Giữ tỷ lệ */
+        object-fit: contain; /* Tránh kéo giãn */
+        margin: 20px auto;
+        display: block;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
+    .image-caption {
+        font-style: italic;
+        font-size: 16px;
+        color: #555;
+        text-align: center;
+        margin-top: -10px;
+        margin-bottom: 20px;
+    }
+
+    .step-container {
+        margin-bottom: 25px;
+    }
+
+    .step-description {
+        margin-bottom: 20px;
+    }
+
+    .step-table {
+        width: 100%;
+    }
+
+        .step-table table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .step-table th, .step-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        .step-table th {
+            background-color: #e9ecef;
+        }
+
+    .sbox-table {
+        margin-bottom: 20px;
+    }
+
+        .sbox-table td {
+            padding: 6px;
+            font-size: 13px;
+        }
+
+        .sbox-table th {
+            padding: 6px;
+            font-size: 13px;
+        }
+</style>
+
+<div class="des-container">
+    <h1>I. Thuật toán DES</h1>
+    <h2>1. Giới thiệu về thuật toán DES</h2>
+    <p>
+        <strong>DES (Data Encryption Standard)</strong> là thuật toán mã hóa đối xứng, được chuẩn hóa vào năm 1977 bởi Viện Tiêu chuẩn và Công nghệ Quốc gia Hoa Kỳ (NIST) với sự hỗ trợ của Cơ quan An ninh Quốc gia (NSA). Được phát triển bởi IBM vào đầu những năm 1970 với tên gọi ban đầu là “Lucifer”, DES sử dụng khóa 56-bit để mã hóa dữ liệu theo khối 64-bit, trở thành tiêu chuẩn vàng trong bảo mật thông tin suốt nhiều thập kỷ. Sự ra đời của DES đã đặt nền móng cho các thuật toán mã hóa hiện đại, mặc dù ngày nay nó đã được thay thế bởi các giải pháp tiên tiến hơn như AES.
+    </p>
+    <h2>2. Cấu trúc và nguyên lý hoạt động của DES</h2>
+    <p>
+        DES sử dụng cấu trúc mạng Feistel, một thiết kế phổ biến cho các thuật toán mã hóa khối, giúp tăng tính bảo mật qua các phép biến đổi lặp. Dữ liệu 64-bit được chia thành hai nửa (trái và phải). Trong mỗi vòng mã hóa, nửa bên phải được xử lý qua hàm F, kết quả được kết hợp (XOR) với nửa bên trái, rồi hai nửa đổi chỗ. Hàm F sử dụng các kỹ thuật như mở rộng bit, hoán vị (P-box), và hộp thay thế (S-box) để tăng độ phức tạp. Mỗi vòng dùng một khóa con 48-bit, tạo từ khóa chính 56-bit qua hoán vị và dịch vòng. DES thực hiện 16 vòng mã hóa để đảm bảo dữ liệu được bảo vệ mạnh mẽ.
+    </p>
+    <img src="~/img/Des.png" alt="Sơ đồ quy trình DES" class="des-image" />
+    <p class="image-caption">
+        Hình 1: Sơ đồ quy trình thuật toán DES
+    </p>
+    <h3>2.1. Bảng hoán vị khởi tạo (IP)</h3>
+
+    <div class="step-container">
+        <div class="step-description">
+            <p>
+                Bước hoán vị khởi tạo (IP) của DES sắp xếp lại vị trí 64 bit dữ liệu đầu vào theo bảng IP, giữ nguyên giá trị các bit. Quá trình này tăng độ phức tạp và chuẩn bị dữ liệu cho các vòng mã hóa tiếp theo.
+            </p>
+        </div>
+        <div class="step-table">
+            <table>
+                <tr><td>58</td><td>50</td><td>42</td><td>34</td><td>26</td><td>18</td><td>10</td><td>2</td></tr>
+                <tr><td>60</td><td>52</td><td>44</td><td>36</td><td>28</td><td>20</td><td>12</td><td>4</td></tr>
+                <tr><td>62</td><td>54</td><td>46</td><td>38</td><td>30</td><td>22</td><td>14</td><td>6</td></tr>
+                <tr><td>64</td><td>56</td><td>48</td><td>40</td><td>32</td><td>24</td><td>16</td><td>8</td></tr>
+                <tr><td>57</td><td>49</td><td>41</td><td>33</td><td>25</td><td>17</td><td>9</td><td>1</td></tr>
+                <tr><td>59</td><td>51</td><td>43</td><td>35</td><td>27</td><td>19</td><td>11</td><td>3</td></tr>
+                <tr><td>61</td><td>53</td><td>45</td><td>37</td><td>29</td><td>21</td><td>13</td><td>5</td></tr>
+                <tr><td>63</td><td>55</td><td>47</td><td>39</td><td>31</td><td>23</td><td>15</td><td>7</td></tr>
+            </table>
+            <p><center>Bảng hoán vị khởi tạo (IP)</center></p>
+        </div>
+    </div>
+    <h3>2.2. Hàm F</h3>
+    <img src="~/img/FunctionF.png" alt="Sơ đồ hàm F" class="des-image" />
+    <p class="image-caption">
+        Hình 2: Sơ đồ quy trình hàm F
+    </p>
+    <p>
+        Hàm F là lõi xử lý chính trong mỗi vòng mã hóa của DES, chịu trách nhiệm biến đổi dữ liệu để tăng tính bảo mật trong cấu trúc mạng Feistel. Hàm F nhận nửa bên phải 32 bit của dữ liệu, kết hợp với khóa con, và tạo ra một chuỗi 32 bit mới để kết hợp (XOR) với nửa bên trái. Quy trình này bao gồm các bước phức tạp nhằm làm rối dữ liệu và tăng tính không tuyến tính, khiến việc giải mã mà không có khóa trở nên cực kỳ khó khăn. Cụ thể, hàm F thực hiện như sau:
+    </p>
+    <ul>
+        <li><strong>Mở rộng bit (bảng E)</strong>: Hàm F nhận 32 bit đầu vào và mở rộng thành 48 bit bằng bảng mở rộng E. Bảng E lặp lại một số bit và sắp xếp lại vị trí các bit theo thứ tự cố định, tạo ra chuỗi 48 bit để khớp với kích thước của khóa con.</li>
+        <div class="step-table">
+            <table>
+                <tr><td>32</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td></tr>
+                <tr><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td></tr>
+                <tr><td>8</td><td>9</td><td>10</td><td>11</td><td>12</td><td>13</td></tr>
+                <tr><td>12</td><td>13</td><td>14</td><td>15</td><td>16</td><td>17</td></tr>
+                <tr><td>16</td><td>17</td><td>18</td><td>19</td><td>20</td><td>21</td></tr>
+                <tr><td>20</td><td>21</td><td>22</td><td>23</td><td>24</td><td>25</td></tr>
+                <tr><td>24</td><td>25</td><td>26</td><td>27</td><td>28</td><td>29</td></tr>
+                <tr><td>28</td><td>29</td><td>30</td><td>31</td><td>32</td><td>1</td></tr>
+            </table>
+            <p><center>Bảng mở rộng E</center></p>
+        </div>
+        <li><strong>Phép XOR với khóa con</strong>: Chuỗi 48 bit được kết hợp (XOR) với một khóa con 48 bit, được tạo từ khóa chính 56 bit qua quá trình hoán vị và dịch vòng. Phép XOR đảm bảo dữ liệu bị biến đổi phụ thuộc vào khóa, tăng tính bảo mật.</li>
+        <li><strong>Thay thế qua S-box</strong>: Chuỗi 48 bit được chia thành 8 nhóm, mỗi nhóm 6 bit. Mỗi nhóm được đưa vào một trong 8 hộp thay thế (S-box), thay thế 6 bit thành 4 bit theo bảng tra cứu cố định. Các S-box tạo ra tính không tuyến tính, làm rối mối quan hệ giữa dữ liệu và khóa, kết quả là 32 bit (8 nhóm × 4 bit).</li>
+        <div class="step-table">
+            <h5>S-box 1</h5>
+            <table class="sbox-table">
+                <tr><th>Hàng\Cột</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th><th>11</th><th>12</th><th>13</th><th>14</th><th>15</th></tr>
+                <tr><td>0</td><td>14</td><td>4</td><td>13</td><td>1</td><td>2</td><td>15</td><td>11</td><td>8</td><td>3</td><td>10</td><td>6</td><td>12</td><td>5</td><td>9</td><td>0</td><td>7</td></tr>
+                <tr><td>1</td><td>0</td><td>15</td><td>7</td><td>4</td><td>14</td><td>2</td><td>13</td><td>1</td><td>10</td><td>6</td><td>12</td><td>11</td><td>9</td><td>5</td><td>3</td><td>8</td></tr>
+                <tr><td>2</td><td>4</td><td>1</td><td>14</td><td>8</td><td>13</td><td>6</td><td>2</td><td>11</td><td>15</td><td>12</td><td>9</td><td>7</td><td>3</td><td>10</td><td>5</td><td>0</td></tr>
+                <tr><td>3</td><td>15</td><td>12</td><td>8</td><td>2</td><td>4</td><td>9</td><td>1</td><td>7</td><td>5</td><td>11</td><td>3</td><td>14</td><td>10</td><td>0</td><td>6</td><td>13</td></tr>
+            </table>
+            <h5>S-box 2</h5>
+            <table class="sbox-table">
+                <tr><th>Hàng\Cột</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th><th>11</th><th>12</th><th>13</th><th>14</th><th>15</th></tr>
+                <tr><td>0</td><td>15</td><td>1</td><td>8</td><td>14</td><td>6</td><td>11</td><td>3</td><td>4</td><td>9</td><td>7</td><td>2</td><td>13</td><td>12</td><td>0</td><td>5</td><td>10</td></tr>
+                <tr><td>1</td><td>3</td><td>13</td><td>4</td><td>7</td><td>15</td><td>2</td><td>8</td><td>14</td><td>12</td><td>0</td><td>1</td><td>10</td><td>6</td><td>9</td><td>11</td><td>5</td></tr>
+                <tr><td>2</td><td>0</td><td>14</td><td>7</td><td>11</td><td>10</td><td>4</td><td>13</td><td>1</td><td>5</td><td>8</td><td>12</td><td>6</td><td>9</td><td>3</td><td>2</td><td>15</td></tr>
+                <tr><td>3</td><td>13</td><td>8</td><td>10</td><td>1</td><td>3</td><td>15</td><td>4</td><td>2</td><td>11</td><td>6</td><td>7</td><td>12</td><td>0</td><td>5</td><td>14</td><td>9</td></tr>
+            </table>
+            <h5>S-box 3</h5>
+            <table class="sbox-table">
+                <tr><th>Hàng\Cột</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th><th>11</th><th>12</th><th>13</th><th>14</th><th>15</th></tr>
+                <tr><td>0</td><td>10</td><td>0</td><td>9</td><td>14</td><td>6</td><td>3</td><td>15</td><td>5</td><td>1</td><td>13</td><td>12</td><td>7</td><td>11</td><td>4</td><td>2</td><td>8</td></tr>
+                <tr><td>1</td><td>13</td><td>7</td><td>0</td><td>9</td><td>3</td><td>4</td><td>6</td><td>10</td><td>2</td><td>8</td><td>5</td><td>14</td><td>12</td><td>11</td><td>15</td><td>1</td></tr>
+                <tr><td>2</td><td>13</td><td>6</td><td>4</td><td>9</td><td>8</td><td>15</td><td>3</td><td>0</td><td>11</td><td>1</td><td>2</td><td>12</td><td>5</td><td>10</td><td>14</td><td>7</td></tr>
+                <tr><td>3</td><td>1</td><td>10</td><td>13</td><td>0</td><td>6</td><td>9</td><td>8</td><td>7</td><td>4</td><td>15</td><td>14</td><td>3</td><td>11</td><td>5</td><td>2</td><td>12</td></tr>
+            </table>
+            <h5>S-box 4</h5>
+            <table class="sbox-table">
+                <tr><th>Hàng\Cột</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th><th>11</th><th>12</th><th>13</th><th>14</th><th>15</th></tr>
+                <tr><td>0</td><td>7</td><td>13</td><td>14</td><td>3</td><td>0</td><td>6</td><td>9</td><td>10</td><td>1</td><td>2</td><td>8</td><td>5</td><td>11</td><td>12</td><td>4</td><td>15</td></tr>
+                <tr><td>1</td><td>13</td><td>8</td><td>11</td><td>5</td><td>6</td><td>15</td><td>0</td><td>3</td><td>4</td><td>7</td><td>2</td><td>12</td><td>1</td><td>10</td><td>14</td><td>9</td></tr>
+                <tr><td>2</td><td>10</td><td>6</td><td>9</td><td>0</td><td>12</td><td>11</td><td>7</td><td>13</td><td>15</td><td>1</td><td>3</td><td>14</td><td>5</td><td>2</td><td>8</td><td>4</td></tr>
+                <tr><td>3</td><td>3</td><td>15</td><td>0</td><td>6</td><td>10</td><td>1</td><td>13</td><td>8</td><td>9</td><td>4</td><td>5</td><td>11</td><td>12</td><td>7</td><td>2</td><td>14</td></tr>
+            </table>
+            <h5>S-box 5</h5>
+            <table class="sbox-table">
+                <tr><th>Hàng\Cột</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th><th>11</th><th>12</th><th>13</th><th>14</th><th>15</th></tr>
+                <tr><td>0</td><td>2</td><td>12</td><td>4</td><td>1</td><td>7</td><td>10</td><td>11</td><td>6</td><td>8</td><td>5</td><td>3</td><td>15</td><td>13</td><td>0</td><td>14</td><td>9</td></tr>
+                <tr><td>1</td><td>14</td><td>11</td><td>2</td><td>12</td><td>4</td><td>7</td><td>13</td><td>1</td><td>5</td><td>0</td><td>15</td><td>10</td><td>3</td><td>9</td><td>8</td><td>6</td></tr>
+                <tr><td>2</td><td>4</td><td>2</td><td>1</td><td>11</td><td>10</td><td>13</td><td>7</td><td>8</td><td>15</td><td>9</td><td>12</td><td>5</td><td>6</td><td>3</td><td>0</td><td>14</td></tr>
+                <tr><td>3</td><td>11</td><td>8</td><td>12</td><td>7</td><td>1</td><td>14</td><td>2</td><td>13</td><td>6</td><td>15</td><td>0</td><td>9</td><td>10</td><td>4</td><td>5</td><td>3</td></tr>
+            </table>
+            <h5>S-box 6</h5>
+            <table class="sbox-table">
+                <tr><th>Hàng\Cột</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th><th>11</th><th>12</th><th>13</th><th>14</th><th>15</th></tr>
+                <tr><td>0</td><td>12</td><td>1</td><td>10</td><td>15</td><td>9</td><td>2</td><td>6</td><td>8</td><td>0</td><td>13</td><td>3</td><td>4</td><td>14</td><td>7</td><td>5</td><td>11</td></tr>
+                <tr><td>1</td><td>10</td><td>15</td><td>4</td><td>2</td><td>7</td><td>12</td><td>9</td><td>5</td><td>6</td><td>1</td><td>13</td><td>14</td><td>0</td><td>11</td><td>3</td><td>8</td></tr>
+                <tr><td>2</td><td>9</td><td>14</td><td>15</td><td>5</td><td>2</td><td>8</td><td>12</td><td>3</td><td>7</td><td>0</td><td>4</td><td>10</td><td>1</td><td>13</td><td>11</td><td>6</td></tr>
+                <tr><td>3</td><td>4</td><td>3</td><td>2</td><td>12</td><td>9</td><td>5</td><td>15</td><td>10</td><td>11</td><td>14</td><td>1</td><td>7</td><td>6</td><td>0</td><td>8</td><td>13</td></tr>
+            </table>
+            <h5>S-box 7</h5>
+            <table class="sbox-table">
+                <tr><th>Hàng\Cột</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th><th>11</th><th>12</th><th>13</th><th>14</th><th>15</th></tr>
+                <tr><td>0</td><td>4</td><td>11</td><td>2</td><td>14</td><td>15</td><td>0</td><td>8</td><td>13</td><td>3</td><td>12</td><td>9</td><td>7</td><td>5</td><td>10</td><td>6</td><td>1</td></tr>
+                <tr><td>1</td><td>13</td><td>0</td><td>11</td><td>7</td><td>4</td><td>9</td><td>1</td><td>10</td><td>14</td><td>3</td><td>5</td><td>12</td><td>2</td><td>15</td><td>8</td><td>6</td></tr>
+                <tr><td>2</td><td>1</td><td>4</td><td>11</td><td>13</td><td>12</td><td>3</td><td>7</td><td>14</td><td>10</td><td>15</td><td>6</td><td>8</td><td>0</td><td>5</td><td>9</td><td>2</td></tr>
+                <tr><td>3</td><td>6</td><td>11</td><td>13</td><td>8</td><td>1</td><td>4</td><td>10</td><td>7</td><td>9</td><td>5</td><td>0</td><td>15</td><td>14</td><td>2</td><td>3</td><td>12</td></tr>
+            </table>
+            <h5>S-box 8</h5>
+            <table class="sbox-table">
+                <tr><th>Hàng\Cột</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th><th>11</th><th>12</th><th>13</th><th>14</th><th>15</th></tr>
+                <tr><td>0</td><td>13</td><td>2</td><td>8</td><td>4</td><td>6</td><td>15</td><td>11</td><td>1</td><td>10</td><td>9</td><td>3</td><td>14</td><td>5</td><td>0</td><td>12</td><td>7</td></tr>
+                <tr><td>1</td><td>1</td><td>15</td><td>13</td><td>8</td><td>10</td><td>3</td><td>7</td><td>4</td><td>12</td><td>5</td><td>6</td><td>11</td><td>0</td><td>14</td><td>9</td><td>2</td></tr>
+                <tr><td>2</td><td>7</td><td>11</td><td>4</td><td>1</td><td>9</td><td>12</td><td>14</td><td>2</td><td>0</td><td>6</td><td>10</td><td>13</td><td>15</td><td>3</td><td>5</td><td>8</td></tr>
+                <tr><td>3</td><td>2</td><td>1</td><td>14</td><td>7</td><td>4</td><td>10</td><td>8</td><td>13</td><td>15</td><td>12</td><td>9</td><td>0</td><td>3</td><td>5</td><td>6</td><td>11</td></tr>
+            </table>
+            <p><center>Tám bảng S-box (S1 đến S8)</center></p>
+        </div>
+        <li><strong>Hoán vị P</strong>: Cuối cùng, 32 bit từ S-box được sắp xếp lại vị trí theo bảng hoán vị P. Bước này tăng độ khuếch tán, đảm bảo mỗi bit đầu ra ảnh hưởng đến nhiều vị trí trong dữ liệu, nâng cao tính phức tạp của mã hóa.</li>
+        <div class="step-table">
+            <table>
+                <tr><td>16</td><td>7</td><td>20</td><td>21</td><td>29</td><td>12</td><td>28</td><td>17</td></tr>
+                <tr><td>1</td><td>15</td><td>23</td><td>26</td><td>5</td><td>18</td><td>31</td><td>10</td></tr>
+                <tr><td>2</td><td>8</td><td>24</td><td>14</td><td>32</td><td>27</td><td>3</td><td>9</td></tr>
+                <tr><td>19</td><td>13</td><td>30</td><td>6</td><td>22</td><td>11</td><td>4</td><td>25</td></tr>
+            </table>
+            <p><center>Bảng hoán vị P</center></p>
+        </div>
+    </ul>
+    <p>
+        Nhờ các bước trên, hàm F biến đổi dữ liệu một cách phức tạp, đảm bảo DES đạt được mức bảo mật cao qua 16 vòng mã hóa.
+    </p>
+
+    <h3>2.3. Khóa con (Subkeys)</h3>
+    <img src="~/img/Subkeys.png" alt="Sơ đồ hàm F" class="des-image" />
+    <p class="image-caption">
+        Hình 3: Sơ đồ quy trình tạo khóa con
+    </p>
+    <p>
+        Trong DES, khóa con (subkeys) là các chuỗi bit được tạo từ khóa chính 64-bit để sử dụng trong 16 vòng mã hóa của hàm F. Mỗi vòng yêu cầu một khóa con 48-bit khác nhau, được tạo qua một quy trình gồm hoán vị, chia nửa, dịch vòng trái, và chọn bit. Quy trình này đảm bảo các khóa con đủ đa dạng và phức tạp, tăng tính bảo mật của thuật toán. Cụ thể, quá trình tạo khóa con bao gồm các bước sau:
+    </p>
+    <div class="step-container">
+        <div class="step-description">
+            <p>
+                <strong>Hoán vị PC-1</strong>: Khóa chính 64-bit được sắp xếp lại theo bảng PC-1, loại bỏ 8 bit kiểm tra chẵn lẻ (parity bits) để còn 56 bit. Chuỗi 56 bit này được chia thành hai nửa bằng nhau: C (28 bit) và D (28 bit).
+            </p>
+        </div>
+        <div class="step-table">
+            <table>
+                <tr><td>57</td><td>49</td><td>41</td><td>33</td><td>25</td><td>17</td><td>9</td></tr>
+                <tr><td>1</td><td>58</td><td>50</td><td>42</td><td>34</td><td>26</td><td>18</td></tr>
+                <tr><td>10</td><td>2</td><td>59</td><td>51</td><td>43</td><td>35</td><td>27</td></tr>
+                <tr><td>19</td><td>11</td><td>3</td><td>60</td><td>52</td><td>44</td><td>36</td></tr>
+                <tr><td>63</td><td>55</td><td>47</td><td>39</td><td>31</td><td>23</td><td>15</td></tr>
+                <tr><td>7</td><td>62</td><td>54</td><td>46</td><td>38</td><td>30</td><td>22</td></tr>
+                <tr><td>14</td><td>6</td><td>61</td><td>53</td><td>45</td><td>37</td><td>29</td></tr>
+                <tr><td>21</td><td>13</td><td>5</td><td>28</td><td>20</td><td>12</td><td>4</td></tr>
+            </table>
+            <p><center>Bảng hoán vị PC-1</center></p>
+        </div>
+    </div>
+    <div class="step-container">
+        <div class="step-description">
+            <p>
+                <strong>Dịch vòng trái</strong>: Hai nửa C và D được dịch vòng trái (left shift) độc lập theo số lần cố định cho mỗi vòng mã hóa, từ 1 hoặc 2 bit, theo bảng số lần dịch bit. Quá trình này tạo ra các phiên bản khác nhau của C và D cho mỗi vòng, đảm bảo các khóa con không lặp lại.
+            </p>
+        </div>
+        <div class="step-table">
+            <table>
+                <tr><th>Vòng</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th><th>11</th><th>12</th><th>13</th><th>14</th><th>15</th><th>16</th></tr>
+                <tr><td>Số lần dịch trái</td><td>1</td><td>1</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>1</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>1</td></tr>
+            </table>
+            <p><center>Bảng số lần dịch bit (Shift Schedule)</center></p>
+        </div>
+    </div>
+    <div class="step-container">
+        <div class="step-description">
+            <p>
+                <strong>Hoán vị PC-2</strong>: Sau mỗi lần dịch vòng trái, hai nửa C và D (tổng 56 bit) được kết hợp và hoán vị qua bảng PC-2 để chọn 48 bit, tạo ra một khóa con 48-bit cho mỗi vòng mã hóa. Quá trình này lặp lại 16 lần để tạo 16 khóa con khác nhau.
+            </p>
+        </div>
+        <div class="step-table">
+            <table>
+                <tr><td>14</td><td>17</td><td>11</td><td>24</td><td>1</td><td>5</td></tr>
+                <tr><td>3</td><td>28</td><td>15</td><td>6</td><td>21</td><td>10</td></tr>
+                <tr><td>23</td><td>19</td><td>12</td><td>4</td><td>26</td><td>8</td></tr>
+                <tr><td>16</td><td>7</td><td>27</td><td>20</td><td>13</td><td>2</td></tr>
+                <tr><td>41</td><td>52</td><td>31</td><td>37</td><td>47</td><td>55</td></tr>
+                <tr><td>30</td><td>40</td><td>51</td><td>45</td><td>33</td><td>48</td></tr>
+                <tr><td>44</td><td>49</td><td>39</td><td>56</td><td>34</td><td>53</td></tr>
+                <tr><td>46</td><td>42</td><td>50</td><td>36</td><td>29</td><td>32</td></tr>
+            </table>
+            <p><center>Bảng hoán vị PC-2</center></p>
+        </div>
+    </div>
+
+
+    <h3>2.4: Hoán vị cuối (IP-1)</h3>
+    <div class="step-container">
+        <div class="step-description">
+            <p>
+                Sau 16 vòng mã hóa, hai nửa dữ liệu L (trái) và R (phải) được kết hợp thành một chuỗi 64-bit. Chuỗi này được sắp xếp lại vị trí các bit theo bảng hoán vị cuối (FP) để tạo ra bản mã hoàn chỉnh. Bảng FP là nghịch đảo của bảng hoán vị ban đầu (IP), nghĩa là nó đảo ngược quá trình sắp xếp của IP, đảm bảo tính đối xứng giữa mã hóa và giải mã. Mỗi bit trong chuỗi 64-bit được ánh xạ sang một vị trí mới theo bảng FP, giữ nguyên giá trị bit.
+            </p>
+        </div>
+        <div class="step-table">
+            <table>
+                <tr><td>40</td><td>8</td><td>48</td><td>16</td><td>56</td><td>24</td><td>64</td><td>32</td></tr>
+                <tr><td>39</td><td>7</td><td>47</td><td>15</td><td>55</td><td>23</td><td>63</td><td>31</td></tr>
+                <tr><td>38</td><td>6</td><td>46</td><td>14</td><td>54</td><td>22</td><td>62</td><td>30</td></tr>
+                <tr><td>37</td><td>5</td><td>45</td><td>13</td><td>53</td><td>21</td><td>61</td><td>29</td></tr>
+                <tr><td>36</td><td>4</td><td>44</td><td>12</td><td>52</td><td>20</td><td>60</td><td>28</td></tr>
+                <tr><td>35</td><td>3</td><td>43</td><td>11</td><td>51</td><td>19</td><td>59</td><td>27</td></tr>
+                <tr><td>34</td><td>2</td><td>42</td><td>10</td><td>50</td><td>18</td><td>58</td><td>26</td></tr>
+                <tr><td>33</td><td>1</td><td>41</td><td>9</td><td>49</td><td>17</td><td>57</td><td>25</td></tr>
+            </table>
+            <p><center>Bảng 2.4.1: Bảng hoán vị cuối (IP-1)</center></p>
+        </div>
+    </div>
+    <p>
+        <a href="@Url.Action("Index", "Home")">Quay lại trang chủ</a>
+    </p>
+</div>

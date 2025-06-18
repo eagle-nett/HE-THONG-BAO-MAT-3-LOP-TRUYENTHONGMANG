@@ -1,0 +1,42 @@
+﻿@{
+    ViewBag.Title = "Băm khóa chung";
+    Layout = "~/Views/Shared/Layout.cshtml";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg">
+                <div class="card-header bg-info text-white text-center">
+                    <h3>Băm khóa chung bằng MD5</h3>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="/Hash/Index">
+                        <div class="mb-3">
+                            <label class="form-label">Nhập khóa chung:</label>
+                            <input type="text" class="form-control" name="sharedKey" required>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">Băm khóa</button>
+                    </form>
+
+                    @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+                    {
+                        <div class="alert alert-danger mt-3">@ViewBag.ErrorMessage</div>
+                    }
+
+                    @if (!string.IsNullOrEmpty(ViewBag.HashedKey))
+                    {
+                        <div class="alert alert-info mt-4">
+                            <h5 class="text-center"><strong>Kết quả:</strong></h5>
+                            <p><strong>Khóa chung đã nhập:</strong></p>
+                            <p class="bg-light p-2 border rounded">@ViewBag.SharedKey</p>
+
+                            <p><strong>Khóa sau khi băm MD5:</strong></p>
+                            <p class="bg-light p-2 border rounded text-break">@ViewBag.HashedKey</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

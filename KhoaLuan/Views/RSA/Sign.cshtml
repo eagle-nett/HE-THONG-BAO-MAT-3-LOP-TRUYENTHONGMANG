@@ -1,0 +1,63 @@
+﻿@{
+    ViewBag.Title = "RSA Digital Signature";
+    Layout = "~/Views/Shared/Layout.cshtml";
+}
+
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h3 class="mb-0">RSA - Ký số</h3>
+        </div>
+        <div class="card-body">
+            @if (ViewBag.Error != null)
+            {
+                <div class="alert alert-danger" role="alert">
+                    @ViewBag.Error
+                </div>
+            }
+
+            @using (Html.BeginForm("Sign", "RSA", FormMethod.Post))
+            {
+                <div class="row">
+                    <div class="col-md-6">
+                        <label for="d" class="form-label">Khóa bí mật d:</label>
+                        <input type="number" name="d" id="d" class="form-control" required value="@ViewBag.D" />
+                    </div>
+                    <div class="col-md-6">
+                        <label for="n" class="form-label">Mô-đun n:</label>
+                        <input type="number" name="n" id="n" class="form-control" required value="@ViewBag.N" />
+                    </div>
+                </div>
+                <div class="mb-3 mt-3">
+                    <label for="message" class="form-label">Dữ liệu cần ký (m):</label>
+                    <input type="number" name="message" id="message" class="form-control" required value="@ViewBag.Message" />
+                </div>
+
+                <button type="submit" class="btn btn-success">Thực hiện</button>
+            }
+        </div>
+    </div>
+
+    @if (ViewBag.ComputedSignature != null)
+    {
+        <div class="card shadow mt-4 border-info">
+            <div class="card-header bg-info text-white">
+                <h4 class="mb-0">Kết quả</h4>
+            </div>
+            <div class="card-body">
+                <p><strong>Khóa bí mật (d, n):</strong> (@ViewBag.D, @ViewBag.N)</p>
+                <p><strong>Dữ liệu gốc (m):</strong> @ViewBag.Message</p>
+                <p><strong>Chữ ký (s):</strong> @ViewBag.ComputedSignature</p>
+                <p><strong>Quá trình:</strong> @ViewBag.Process</p>
+                <hr />
+                @*<p><strong>Cách tính (Square-and-Multiply):</strong></p>
+                <ul>
+                    @foreach (var step in ViewBag.CalculationSteps)
+                    {
+                        <li>@step</li>
+                    }
+                </ul>*@
+            </div>
+        </div>
+    }
+</div>

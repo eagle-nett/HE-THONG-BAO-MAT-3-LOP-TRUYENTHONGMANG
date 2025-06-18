@@ -1,0 +1,37 @@
+﻿/* Nổi bật phần chứa feedback */
+.carousel-item {
+    padding: 20px;
+    background-color: #fff; /* Màu nền trắng */
+    border-radius: 10px; /* Bo góc */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Bóng đổ nhẹ */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Hiệu ứng chuyển động */
+}
+
+    /* Hiệu ứng hover khi người dùng di chuột vào */
+    .carousel-item:hover {
+        transform: translateY(-10px); /* Đẩy lên nhẹ */
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); /* Bóng đổ đậm hơn */
+    }
+
+    /* Tăng cường hiển thị tên người dùng */
+    .carousel-item h5 {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #333; /* Màu chữ tối */
+    }
+
+    /* Phần mô tả phản hồi */
+    .carousel-item p {
+        color: #666; /* Màu chữ nhạt cho mô tả */
+        font-style: italic; /* Làm nghiêng mô tả */
+    }
+
+    /* Tạo hiệu ứng cho ảnh người dùng */
+    .carousel-item img {
+        transition: transform 0.3s ease;
+    }
+
+    /* Tăng kích thước ảnh người dùng khi hover */
+    .carousel-item:hover img {
+        transform: scale(1.1); /* Phóng to ảnh một chút khi hover */
+    }

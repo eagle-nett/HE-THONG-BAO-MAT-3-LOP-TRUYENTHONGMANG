@@ -1,0 +1,531 @@
+﻿@{
+    ViewBag.Title = "Giải thích chi tiết về RSA, Chữ ký số, Hàm băm MD5 và Diffie-Hellman";
+    Layout = "~/Views/Shared/Layout.cshtml";
+}
+
+<style>
+    .des-container {
+        max-width: 1200px;
+        margin: 40px auto;
+        padding: 30px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+        .des-container h2 {
+            color: #1a2b3c;
+            margin-bottom: 25px;
+        }
+
+        .des-container h3 {
+            color: #3e5f7a;
+            margin-top: 25px;
+        }
+
+        .des-container h4 {
+            color: #4a6078;
+            margin-top: 25px;
+        }
+
+        .des-container p, .des-container ul {
+            font-size: 18px;
+            line-height: 1.8;
+            color: #333;
+        }
+
+        .des-container ul {
+            padding-left: 20px;
+        }
+
+        .des-container a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+            .des-container a:hover {
+                text-decoration: underline;
+            }
+
+    .des-image {
+        max-width: 100%;
+        width: auto;
+        height: auto;
+        object-fit: contain;
+        margin: 20px auto;
+        display: block;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
+    .image-caption {
+        font-style: italic;
+        font-size: 16px;
+        color: #555;
+        text-align: center;
+        margin-top: -10px;
+        margin-bottom: 20px;
+    }
+
+    .step-container {
+        margin-bottom: 25px;
+    }
+
+    .step-description {
+        margin-bottom: 20px;
+    }
+
+    .step-table {
+        width: 100%;
+    }
+
+        .step-table table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .step-table th, .step-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        .step-table th {
+            background-color: #e9ecef;
+        }
+
+    .note {
+        background-color: #e7f3fe;
+        border-left: 4px solid #2196f3;
+        padding: 15px;
+        margin: 20px 0;
+        font-size: 16px;
+    }
+</style>
+
+<div class="des-container">
+    <h2>Giải thích chi tiết về RSA, Chữ ký số, Hàm băm MD5 và Diffie-Hellman</h2>
+    <p>
+        Tài liệu này cung cấp cái nhìn toàn diện về thuật toán RSA, chữ ký số, hàm băm MD5 và thuật toán Diffie-Hellman, bao gồm khái niệm, cách hoạt động, ví dụ minh họa và ứng dụng thực tế. Mục tiêu là giúp người dùng hiểu rõ cách các công nghệ này được sử dụng trong bảo mật thông tin, đặc biệt trong xác minh danh tính, bảo vệ dữ liệu và trao đổi khóa an toàn.
+    </p>
+
+    <h3>1. Thuật toán RSA</h3>
+    <div class="step-container">
+        <div class="step-description">
+            <h4>1.1. RSA là gì?</h4>
+            <p>
+                RSA là một thuật toán mã hóa khóa công khai, được sử dụng rộng rãi trong bảo mật thông tin như mã hóa dữ liệu và tạo chữ ký số.
+            </p>
+            <ul>
+                <li><strong>Nguyên lý</strong>: Sử dụng cặp khóa gồm khóa công khai (public key) để mã hóa và khóa riêng (private key) để giải mã.</li>
+            </ul>
+
+            <h4>1.2. Cách hoạt động của RSA</h4>
+            <ul>
+                <li>
+                    <strong>Bước 1: Tạo cặp khóa RSA</strong>
+                    <div class="step-description">
+                        <ul>
+                            <li>Chọn hai số nguyên tố lớn <code>p</code> và <code>q</code> (ví dụ: <code>p = 61</code>, <code>q = 53</code>).</li>
+                            <li>Tính <code>n = p * q</code> (modulus): <code>n = 61 * 53 = 3233</code>.</li>
+                            <li>Tính hàm Euler <code>φ(n) = (p-1) * (q-1)</code>: <code>φ(n) = 60 * 52 = 3120</code>.</li>
+                            <li>
+                                Chọn số <code>e</code> (số mũ công khai) sao cho <code>1 < e < φ(n)</code> và <code>e</code> nguyên tố cùng nhau với <code>φ(n)</code> (nghĩa là ước chung lớn nhất của <code>e</code> và <code>φ(n)</code> là 1).
+                                <div class="step-description">
+                                    <h4>Chi tiết cách chọn <code>e</code> với thuật toán Euclid</h4>
+                                    <ul>
+                                        <li>
+                                            <strong>Điều kiện chọn <code>e</code></strong>:
+                                            <ul>
+                                                <li><code>1 < e < φ(n)</code></li>
+                                                <li><code>GCD(e, φ(n)) = 1</code></li>
+                                            </ul>
+                                        </li>
+                                        <li>
+                                            <strong>Thuật toán Euclid để tính GCD</strong>:
+                                            <ul>
+                                                <li>Cho hai số <code>a</code> và <code>b</code> (lần lượt là <code>φ(n)</code> và <code>e</code>).</li>
+                                                <li>
+                                                    Lặp lại:
+                                                    <ul>
+                                                        <li>Chia <code>a</code> cho <code>b</code>, lấy nguyên dư: <code>a = b * q + r</code> (<code>q</code> là thương nguyên của phép chia <code>a / b</code>, <code>r</code> là phần dư hay <code>a % b</code>)</li>
+                                                        <li>Gán <code>a = b</code>, <code>b = r</code>.</li>
+                                                        <li>Tiếp tục cho đến khi <code>r = 0</code>.</li>
+                                                    </ul>
+                                                </li>
+                                                <li>GCD là giá trị <code>b</code> cuối cùng (trước khi <code>r</code> bằng 0).</li>
+                                            </ul>
+                                        </li>
+                                        <li>
+                                            <strong>Ví dụ chọn <code>e</code> với <code>φ(n) = 3120</code></strong>:
+                                            <div class="step-table">
+                                                <table>
+                                                    <tr>
+                                                        <th>Giá trị <code>e</code> thử</th>
+                                                        <th>Các bước tính GCD</th>
+                                                        <th>GCD với <code>φ(n) = 3120</code></th>
+                                                        <th>Kết luận</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><code>3</code></td>
+                                                        <td>
+                                                            Bước 1: <code>3120 = 3 * 1040 + 0</code> (dư = 0)
+                                                        </td>
+                                                        <td><code>3</code></td>
+                                                        <td>
+                                                            <code>GCD(3, 3120) = 3 ≠ 1</code>, không thỏa mãn
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><code>17</code></td>
+                                                        <td>
+                                                            Bước 1: <code>3120 = 17 * 183 + 9</code> (dư = 9)<br>
+                                                            Bước 2: <code>17 = 9 * 1 + 8</code> (dư = 8)<br>
+                                                            Bước 3: <code>9 = 8 * 1 + 1</code> (dư = 1)<br>
+                                                            Bước 4: <code>8 = 1 * 8 + 0</code> (dư = 0)
+                                                        </td>
+                                                        <td><code>1</code></td>
+                                                        <td>
+                                                            <code>GCD(17, 3120) = 1</code>, thỏa mãn
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><code>65537</code></td>
+                                                        <td>
+                                                            Không cần tính GCD vì <code>65537 > 3120</code>
+                                                        </td>
+                                                        <td>-</td>
+                                                        <td>
+                                                            Không thỏa mãn <code>e < φ(n)</code>, không dùng được
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            <p><strong>Quyết định</strong>: Chọn <code>e = 17</code> vì thỏa mãn cả hai điều kiện: <code>1 < 17 < 3120</code> và <code>GCD(17, 3120) = 1</code>.</p>
+                                        </li>
+                                    </ul>
+                                    <div class="step-table">
+                                        <table>
+                                            <tr>
+                                                <th>Giá trị <code>e</code> thử</th>
+                                                <th>Điều kiện <code>1 < e < φ(n)</code></th>
+                                                <th>GCD với <code>φ(n) = 3120</code></th>
+                                                <th>Thỏa mãn?</th>
+                                            </tr>
+                                            <tr>
+                                                <td><code>3</code></td>
+                                                <td>Có</td>
+                                                <td><code>3</code></td>
+                                                <td>Không</td>
+                                            </tr>
+                                            <tr>
+                                                <td><code>17</code></td>
+                                                <td>Có</td>
+                                                <td><code>1</code></td>
+                                                <td>Có</td>
+                                            </tr>
+                                            <tr>
+                                                <td><code>65537</code></td>
+                                                <td>Không</td>
+                                                <td>-</td>
+                                                <td>Không</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div class="note">
+                                        <strong>Lưu ý</strong>:
+                                        <ul>
+                                            <li>Chọn <code>e</code> nhỏ như <code>3</code> có thể dẫn đến các cuộc tấn công nếu thông điệp không được đệm (padding) đúng cách. Trong thực tế, <code>e = 65537</code> là lựa chọn phổ biến vì tính an toàn và hiệu quả.</li>
+                                            <li>Thuật toán Euclid rất hiệu quả để kiểm tra GCD, đặc biệt với các số lớn trong RSA thực tế.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <h4>Chi tiết cách chọn <code>d</code> với thuật toán Euclid mở rộng</h4>
+                                <ul>
+                                    <li>Khởi tạo:</li>
+                                    <li><code>R1</code> = <code>φ(n)</code></li>
+                                    <li><code>R2</code> = <code>e</code></li>
+                                    <li><code>r</code> là số dư của phép chia <code>R1/R2</code></li>
+                                    <li><code>q</code> là thương của phép chia <code>R1/R2</code></li>
+                                    <li><code>T1</code> = <code>0</code></li>
+                                    <li><code>T2</code> = <code>1</code></li>
+                                    <li><code>t</code> = <code>T1-q*T2</code></li>
+                                </ul>
+                                <div class="step-description">
+                                    <p>
+                                        Để tìm <code>d</code> (số mũ bí mật) sao cho <code>17 * d ≡ 1 mod φ(n)</code> với <code>e = 17</code> và <code>φ(n) = 3120</code>, ta sử dụng thuật toán Euclid mở rộng. Bảng dưới đây mô tả các bước tính GCD(3120, 17) và các hệ số <code>T1</code>, <code>T2</code>, <code>t</code> để tìm <code>d</code>.
+                                    </p>
+                                    <div class="step-table">
+                                        <table>
+                                            <tr>
+                                                <th>q</th>
+                                                <th>R1</th>
+                                                <th>R2</th>
+                                                <th>r</th>
+                                                <th>T1</th>
+                                                <th>T2</th>
+                                                <th>t</th>
+                                            </tr>
+                                            <tr>
+                                                <td>183</td>
+                                                <td>3120</td>
+                                                <td>17</td>
+                                                <td>9</td>
+                                                <td>0</td>
+                                                <td>1</td>
+                                                <td>-183</td>
+                                            </tr>
+                                            <tr>
+                                                <td>1</td>
+                                                <td>17</td>
+                                                <td>9</td>
+                                                <td>8</td>
+                                                <td>1</td>
+                                                <td>-183</td>
+                                                <td>184</td>
+                                            </tr>
+                                            <tr>
+                                                <td>1</td>
+                                                <td>9</td>
+                                                <td>8</td>
+                                                <td>1</td>
+                                                <td>-183</td>
+                                                <td>184</td>
+                                                <td>-367</td>
+                                            </tr>
+                                            <tr>
+                                                <td>8</td>
+                                                <td>8</td>
+                                                <td>1</td>
+                                                <td>0</td>
+                                                <td>184</td>
+                                                <td>-367</td>
+                                                <td>3120</td>
+                                            </tr>
+                                            <tr>
+                                                <td>-</td>
+                                                <td>1</td>
+                                                <td>0</td>
+                                                <td>-</td>
+                                                <td>-367</td>
+                                                <td>3120</td>
+                                                <td>-</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <p>
+                                        Ta có <code>T1 = -367</code>, nghĩa là <code>d = -367</code>. Tuy nhiên, trong RSA, <code>d</code> cần là số dương. Do đó, ta chuyển <code>d</code> thành số dương bằng cách:
+                                        <br>
+                                        <code>d = φ(n) + (-367) = 3120 + (-367) = 3120 - 367 = 2753</code>
+                                        <br>
+                                        Kết quả: <code>d = 2753</code> là số mũ bí mật.
+                                    </p>
+                                </div>
+                            </li>
+                            <li>
+                                Kết quả:
+                                <ul>
+                                    <li>Khóa công khai: <code>(e, n) = (17, 3233)</code>.</li>
+                                    <li>Khóa riêng: <code>(d, n) = (2753, 3233)</code>.</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                <strong>Bước 2: Mã hóa, giải mã</strong>
+            </ul>
+            <div class="step-table">
+                <table>
+                    <tr>
+                        <th>Thao tác</th>
+                        <th>Công thức</th>
+                        <th>Ví dụ</th>
+                    </tr>
+                    <tr>
+                        <td>Mã hóa</td>
+                        <td><code>c = m^e mod n</code></td>
+                        <td><code>123^17 mod 3233 = 855</code></td>
+                    </tr>
+                    <tr>
+                        <td>Giải mã</td>
+                        <td><code>m = c^d mod n</code></td>
+                        <td><code>855^2753 mod 3233 = 123</code></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="note">
+                <strong>Lưu ý:</strong> Trong thực tế, <code>p</code> và <code>q</code> phải là số nguyên tố rất lớn (thường 2048 bit hoặc hơn) để đảm bảo an toàn. Các số nhỏ trong ví dụ chỉ dùng cho mục đích minh họa.
+            </div>
+        </div>
+    </div>
+
+    <h3>2. Chữ ký số</h3>
+    <div class="step-container">
+        <div class="step-description">
+            <h4>2.1. Chữ ký số là gì?</h4>
+            <p>
+                Chữ ký số (digital signature) là một dạng chữ ký điện tử sử dụng thuật toán mã hóa (như RSA) để xác minh danh tính người gửi và đảm bảo tính toàn vẹn của thông điệp. Nó giúp ngăn chặn tấn công giả mạo (man-in-the-middle).
+            </p>
+            <ul>
+                <li><strong>Mục đích</strong>: Xác minh người gửi, đảm bảo thông điệp không bị thay đổi.</li>
+                <li><strong>Ứng dụng</strong>: Ký hợp đồng điện tử, xác minh phần mềm, bảo mật giao dịch ngân hàng.</li>
+            </ul>
+
+            <h4>2.2. Cách hoạt động của chữ ký số với RSA</h4>
+            <p>
+                Chữ ký số sử dụng cặp khóa RSA với khóa bí mật dùng để ký và khóa công khai để xác minh.
+            </p>
+            <ul>
+            </ul>
+            <div class="step-table">
+                <table>
+                    <tr>
+                        <th>Thao tác</th>
+                        <th>Công thức</th>
+                        <th>Ví dụ</th>
+                    </tr>
+                    <tr>
+                        <td>Tạo chữ ký</td>
+                        <td><code>s = m^d mod n</code></td>
+                        <td><code>6^2753 mod 3233 = 2902</code></td>
+                    </tr>
+                    <tr>
+                        <td>Xác minh chữ ký</td>
+                        <td><code>m = s^e mod n</code></td>
+                        <td><code>2902^17 mod 3233 = 6</code></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <h3>3. Hàm băm MD5</h3>
+    <div class="step-container">
+        <div class="step-description">
+            <h4>3.1. MD5 là gì?</h4>
+            <p>
+                MD5 (Message Digest Algorithm 5) là một hàm băm tạo ra giá trị băm 128-bit (thường biểu diễn dưới dạng 32 ký tự HEX) từ dữ liệu đầu vào bất kỳ.
+            </p>
+            <ul>
+                <li><strong>Đặc điểm</strong>: Nhanh, dễ tính toán, nhưng không an toàn cho bảo mật cao do dễ bị tấn công va chạm (collision).</li>
+                <li><strong>Ứng dụng</strong>: Kiểm tra tính toàn vẹn của tệp, lưu trữ mật khẩu (hiện ít dùng), hỗ trợ chữ ký số.</li>
+            </ul>
+
+            <h4>3.2. Cách hoạt động của MD5</h4>
+            <p>
+                MD5 xử lý dữ liệu đầu vào qua các bước sau:
+            </p>
+            <ul>
+                <li><strong>Chuẩn bị dữ liệu (Padding)</strong>: Dữ liệu được bổ sung để độ dài chia hết cho 512 bit. Thêm bit "1", các bit "0", và 64 bit cuối ghi độ dài dữ liệu gốc.</li>
+                <li><strong>Chia khối</strong>: Dữ liệu được chia thành các khối 512-bit để xử lý độc lập.</li>
+                <li><strong>Khởi tạo bộ đệm</strong>: Sử dụng 4 biến 32-bit (A, B, C, D) với giá trị khởi tạo cố định: A=0x67452301, B=0xEFCDAB89, C=0x98BADCFE, D=0x10325476.</li>
+                <li><strong>Xử lý từng khối</strong>: Mỗi khối 512-bit được chia thành 16 phần 32-bit. Thực hiện 64 bước tính toán qua 4 vòng, sử dụng phép toán bit (AND, OR, XOR, NOT), hằng số, và xoay vòng giá trị.</li>
+                <li><strong>Tạo giá trị băm</strong>: Cộng giá trị A, B, C, D sau xử lý vào giá trị ban đầu, tạo ra giá trị băm 128-bit (32 ký tự HEX).</li>
+                <li>
+                    Ví dụ: Băm số <code>3</code>:
+                    <ul>
+                        <li>Kết quả: <code>eccbc87e4b5ce2fe28308fd9f2a7baf3</code>.</li>
+                    </ul>
+                </li>
+            </ul>
+            <div class="step-table">
+                <table>
+                    <tr>
+                        <th>Đầu vào</th>
+                        <th>Giá trị băm MD5</th>
+                    </tr>
+                    <tr>
+                        <td><code>3</code></td>
+                        <td><code>eccbc87e4b5ce2fe28308fd9f2a7baf3</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>Hello</code></td>
+                        <td><code>8b1a9953c4611296a827abf8c47804d7</code></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="note">
+                <strong>Lưu ý:</strong> MD5 không còn an toàn cho các ứng dụng bảo mật (như chữ ký số hoặc lưu trữ mật khẩu) do đã bị phát hiện có khả năng tạo va chạm. Các hàm băm hiện đại như SHA-256 hoặc SHA-3 nên được sử dụng thay thế.
+            </div>
+        </div>
+    </div>
+
+    <h3>4. Thuật toán Diffie-Hellman</h3>
+    <div class="step-container">
+        <div class="step-description">
+            <h4>4.1. Diffie-Hellman là gì?</h4>
+            <p>
+                Diffie-Hellman (DH) là một thuật toán trao đổi khóa, cho phép hai bên thiết lập một khóa bí mật chung qua một kênh không an toàn. Khóa này có thể được sử dụng cho mã hóa đối xứng (như DES).
+            </p>
+
+            <h4>4.2. Cách hoạt động của Diffie-Hellman</h4>
+            <p>
+                Diffie-Hellman thực hiện trao đổi khóa qua các bước sau:
+            </p>
+            <ul>
+                <li><strong>Thỏa thuận các tham số công khai</strong>: Chọn một số nguyên tố lớn <code>p</code> (modulus) và một số nguyên <code>g</code> (cơ số, thường nhỏ) là tham số công khai mà cả hai bên biết.</li>
+                <li><strong>Chọn khóa riêng</strong>: Mỗi bên (Alice và Bob) chọn một số bí密 <code>a</code> (cho Alice) và <code>b</code> (cho Bob).</li>
+                <li>
+                    <strong>Tính toán giá trị công khai</strong>:
+                    <ul>
+                        <li>Alice tính <code>A = g^a mod p</code> và gửi <code>A</code> cho Bob.</li>
+                        <li>Bob tính <code>B = g^b mod p</code> và gửi <code>B</code> cho Alice.</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Tính khóa bí mật chung</strong>:
+                    <ul>
+                        <li>Alice tính <code>K = B^a mod p</code>.</li>
+                        <li>Bob tính <code>K = A^b mod p</code>.</li>
+                        <li>Do <code>B^a mod p = g^(b*a) mod p = g^(a*b) mod p = A^b mod p</code>, cả hai bên sẽ có cùng khóa bí mật <code>K</code>.</li>
+                    </ul>
+                </li>
+                <li>
+                    Ví dụ: Với <code>p = 23</code>, <code>g = 5</code>, Alice chọn <code>a = 6</code>, Bob chọn <code>b = 15</code>:
+                    <ul>
+                        <li>Alice tính <code>A = 5^6 mod 23 = 8</code> và gửi cho Bob.</li>
+                        <li>Bob tính <code>B = 5^15 mod 23 = 19</code> và gửi cho Alice.</li>
+                        <li>Alice tính <code>K = 19^6 mod 23 = 2</code>.</li>
+                        <li>Bob tính <code>K = 8^15 mod 23 = 2</code>.</li>
+                        <li>Kết quả: Cả hai có khóa bí mật chung <code>K = 2</code>.</li>
+                    </ul>
+                </li>
+            </ul>
+            <div class="step-table">
+                <table>
+                    <tr>
+                        <th>Thao tác</th>
+                        <th>Alice</th>
+                        <th>Bob</th>
+                    </tr>
+                    <tr>
+                        <td>Khóa riêng</td>
+                        <td><code>a = 6</code></td>
+                        <td><code>b = 15</code></td>
+                    </tr>
+                    <tr>
+                        <td>Giá trị công khai</td>
+                        <td><code>A = 5^6 mod 23 = 8</code></td>
+                        <td><code>B = 5^15 mod 23 = 19</code></td>
+                    </tr>
+                    <tr>
+                        <td>Khóa bí mật chung</td>
+                        <td><code>K = 19^6 mod 23 = 2</code></td>
+                        <td><code>K = 8^15 mod 23 = 2</code></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="note">
+                <strong>Lưu ý:</strong> Diffie-Hellman chỉ dùng để trao đổi khóa, không mã hóa dữ liệu trực tiếp. Để đảm bảo an toàn, các tham số <code>p</code> và <code>g</code> cần đủ lớn, và cần bảo vệ chống lại các cuộc tấn công như man-in-the-middle bằng cách sử dụng chữ ký số hoặc chứng chỉ.
+            </div>
+        </div>
+    </div>
+
+    <p>
+        <a href="@Url.Action("Index", "Home")">Quay lại trang chủ</a>
+    </p>
+</div>

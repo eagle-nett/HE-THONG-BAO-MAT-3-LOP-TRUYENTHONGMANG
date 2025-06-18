@@ -1,0 +1,42 @@
+﻿@{
+    ViewBag.Title = "Chuyển đổi Hex sang Nhị phân";
+    Layout = "~/Views/Shared/Layout.cshtml";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg">
+                <div class="card-header bg-success text-white text-center">
+                    <h3>Chuyển đổi Hex sang Nhị phân</h3>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="/Hash/HexToBinary">
+                        <div class="mb-3">
+                            <label class="form-label">Nhập 16 ký tự hex:</label>
+                            <input type="text" class="form-control text-uppercase" name="hexInput" required maxlength="16">
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Chuyển đổi</button>
+                    </form>
+
+                    @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+                    {
+                        <div class="alert alert-danger mt-3">@ViewBag.ErrorMessage</div>
+                    }
+
+                    @if (!string.IsNullOrEmpty(ViewBag.BinaryOutput))
+                    {
+                        <div class="alert alert-info mt-4">
+                            <h5 class="text-center"><strong>Kết quả:</strong></h5>
+                            <p><strong>Chuỗi hex ban đầu:</strong></p>
+                            <p class="bg-light p-2 border rounded text-break">@ViewBag.HexInput</p>
+
+                            <p><strong>Dạng nhị phân (64-bit):</strong></p>
+                            <p class="bg-light p-2 border rounded text-break">@ViewBag.BinaryOutput</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,70 @@
+﻿<!DOCTYPE html>
+<html lang="vi-VN">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8" />
+    <title>@ViewBag.Title</title>
+    <link rel="stylesheet" type="text/css" href="~/Content/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="~/Content/Style.css" />
+    <link rel="stylesheet" type="text/css" href="~/Content/LogIn.css" />
+    <link rel="stylesheet" type="text/css" href="~/Content/Lammau.css" />
+</head>
+<body>
+    <div id="header">
+        <nav class="navbar navbar-expand-sm bg-light navbar-light">
+            <div class="container-fluid">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mynavbar">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="mynavbar">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Home/Index">Trang chủ</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Thuật toán Des</a>
+                            <ul class="dropdown-menu" id="drop">
+                                <li><a class="dropdown-item" href="/DES/GenerateSubKeys">Quy trình tạo khóa con</a></li>
+                                <li><a class="dropdown-item" href="/DESMain/Index">DES</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/DiffieHellman/Index">DiffieHelman</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Các chức năng băm</a>
+                            <ul class="dropdown-menu" id="drop">
+                                <li><a class="dropdown-item" href="/Hash/Index">Hàm băm MD5</a></li>
+                                <li><a class="dropdown-item" href="/Hash/Extract64Bit">Lấy 16 ký tự Hex</a></li>
+                                <li><a class="dropdown-item" href="/Hash/HexToBinary">Chuyển đổi Hex - Bin</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Chữ ký số</a>
+                            <ul class="dropdown-menu" id="drop">
+                                <li><a class="dropdown-item" href="/RSA/Index">Tạo cặp khóa RSA</a></li>
+                                <li><a class="dropdown-item" href="/RSA/Sign">Ký số</a></li>
+                                <li><a class="dropdown-item" href="/RSA/Verify">Xác minh</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Giới thiệu</a>
+                            <ul class="dropdown-menu" id="drop">
+                                <li><a class="dropdown-item" href="/Home/GioiThieuDES">Thuật toán DES</a></li>
+                                <li><a class="dropdown-item" href="/Home/HDSD">Hướng dẫn sử dụng</a></li>
+                            </ul>
+                        </li>
+         
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+    <div class="container-fluid">
+        @RenderBody()
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="~/Scripts/bootstrap.bundle.min.js"></script>
+    @RenderSection("scripts", required: false)
+</body>
+</html>

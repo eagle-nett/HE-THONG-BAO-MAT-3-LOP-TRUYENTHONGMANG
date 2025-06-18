@@ -1,0 +1,189 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/Layout.cshtml";
+}
+
+<section class="hero-section text-white bg-primary py-5">
+    <div class="container text-center">
+        <h1 class="display-4 fw-bold"> Mô phỏng Thuật Toán DES</h1>
+        <p class="lead">Trải nghiệm một Website học thuật mạnh mẽ để mã hóa, giải mã và mô phỏng thuật toán DES - từ lý thuyết đến thực hành.</p>
+        <a href="/DESMain/Index" class="btn btn-light btn-lg mt-3 me-2">Bắt đầu mã hóa</a>
+        <a href="#features" class="btn btn-outline-light btn-lg mt-3">Tìm hiểu thêm</a>
+    </div>
+</section>
+
+<section id="features" class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5"> Tính năng nổi bật</h2>
+        <div class="row text-center">
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body">
+                        <h5 class="card-title">🔄 Mã hóa & Giải mã</h5>
+                        <p class="card-text">Thực hiện mã hóa/giải mã dữ liệu với thuật toán DES và hiển thị kết quả theo thời gian thực.</p>
+                        <a href="/DESMain/Index" class="btn btn-outline-primary btn-sm">Truy cập</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body">
+                        <h5 class="card-title">🔑 Sinh khóa con</h5>
+                        <p class="card-text">Hiển thị chi tiết 16 khóa con từ key chính theo từng vòng lặp trong thuật toán DES.</p>
+                        <a href="/DES/GenerateSubKeys" class="btn btn-outline-primary btn-sm">Xem khóa</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body">
+                        <h5 class="card-title">📊 Mô phỏng trực quan</h5>
+                        <p class="card-text">Trình bày chi tiết từng bước biến đổi: IP, Expansion, S-box, Permutation,...</p>
+                        <a href="/Home/GioiThieuDES" class="btn btn-outline-primary btn-sm">Khám phá</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container">
+        <h2 class="text-center mb-4">🔗 Kết hợp với các thuật toán khác</h2>
+        <div class="row text-center">
+            <div class="col-md-6 mb-4">
+                <div class="border p-4 h-100 rounded bg-white shadow-sm">
+                    <h5>🔐 Diffie-Hellman Key Exchange</h5>
+                    <p class="small">Mô phỏng trao đổi khóa công khai giữa hai bên theo thời gian thực.</p>
+                    <a href="/DiffieHellman/Index" class="btn btn-outline-secondary btn-sm">Xem mô phỏng</a>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="border p-4 h-100 rounded bg-white shadow-sm">
+                    <h5>🧮 Hàm băm SHA-256</h5>
+                    <p class="small">Tính toán hàm băm, chuyển đổi nhị phân và thao tác với bit dễ dàng.</p>
+                    <a href="/Hash/Index" class="btn btn-outline-secondary btn-sm">Dùng thử</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5 bg-white border-top">
+    <div class="container">
+        <h2 class="text-center mb-5"> Nhóm Phát Triển</h2>
+        <div class="row justify-content-center">
+            <div class="col-md-5 mb-4">
+                <div class="card border-0 shadow-sm h-100 text-center">
+                    <img src="~/img/avt2.jpg" class="card-img-top rounded-circle mx-auto mt-4" alt="Dev A" style="width: 150px; height: 150px; object-fit: cover;">
+                    <div class="card-body">
+                        <h5 class="card-title">Lý Tiến Đạt</h5>
+                        <p class="card-text">
+                            @*Thiếu gia họ Lý<br />*@
+                            Email: <a href="mailto:tiendat176mt@gmail.com">tiendat176mt@gmail.comm</a>
+                        </p>
+                        <!--<p class="text-muted small">“Luôn ưu tiên sự rõ ràng và hiệu quả.”</p>--> @*Thiết kế không chỉ đẹp mà còn phải dễ dùng*@
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5 mb-4">
+                <div class="card border-0 shadow-sm h-100 text-center">
+                    <img src="~/img/avt1.jpg" class="card-img-top rounded-circle mx-auto mt-4" alt="Dev A" style="width: 150px; height: 150px; object-fit: cover;">
+                    @*<img src="~/Content/Images/dev2.jpg" class="card-img-top rounded-circle mx-auto mt-4" alt="Dev B" style="width: 150px; height: 150px; object-fit: cover;">*@
+                    <div class="card-body">
+                        <h5 class="card-title">Lê Quốc Anh</h5>
+                        <p class="card-text">
+                            @*Kỹ Sư An Toàn Thông Tin<br />*@
+                            Email: <a href="mailto:94quocanh1872003@gmail.com">94quocanh1872003@gmail.com</a>
+                        </p>
+                        @*<p class="text-muted small">“Luôn mò xương để gặm và event lúc nào cũng đúng giờ.”</p>*@
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@*FEEDBACK*@
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5">💬 Phản hồi từ người dùng</h2>
+        <div id="feedbackCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                <!-- Feedback 1 -->
+                <div class="carousel-item active">
+                    <div class="row justify-content-center">
+                        <div class="col-md-4 text-center">
+                            <img src="https://scontent.fsgn5-9.fna.fbcdn.net/v/t39.30808-6/453100197_8294396430573160_5374009692985242951_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeEJqCjxxsNh_TGJ66Gw2JdSERyUuyrldnkRHJS7KuV2eS0SI7bNVtoyJgrmi6JeMmtwxBW4abqvpOnQMD4Wffgj&_nc_ohc=88phjHVOKfUQ7kNvwGRrHsG&_nc_oc=Adm_zuF9kRUroPwt3sqyMWOWAbeFzGcVLCNwp9D5BgOVvdIoXG6T2HyjaZjj4f7YVtI&_nc_zt=23&_nc_ht=scontent.fsgn5-9.fna&_nc_gid=_GMiCEbUUIWZcSchoNUbEg&oh=00_AfFu7J5-CPek3i6iMz_S0PAsFaA_A3PSvtjEM8kyQDYxCw&oe=6807DF08" class="rounded-circle mb-3" alt="User 1" style="width: 100px; height: 100px; object-fit: cover;">
+                            <h5>ThS. Phạm Tuấn Khiêm</h5>
+                            <p class="text-muted">Giảng viên Đại học Công Thương</p>
+                            <p class="small">“Công cụ này giúp tôi truyền đạt các kiến thức về mã hóa một cách sinh động và dễ hiểu cho sinh viên.”</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Feedback 2 -->
+                <div class="carousel-item">
+                    <div class="row justify-content-center">
+                        <div class="col-md-4 text-center">
+                            <img src="https://scontent.fsgn5-3.fna.fbcdn.net/v/t1.6435-1/159873068_10226208512420013_3280399195382028614_n.jpg?stp=dst-jpg_s200x200_tt6&_nc_cat=104&ccb=1-7&_nc_sid=e99d92&_nc_eui2=AeHLcif7xDAONRx_zvBVDvsWnSB9ddf-a9CdIH111_5r0Ay8EYEeBcy24hh4fzdKQFjBf3fFMnqs6GetiR765ZDS&_nc_ohc=GlX0_9thOBcQ7kNvwG-9XK0&_nc_oc=AdnrsZPFzaVLChv786_SGYUIZZL0kcOlkXWompofXVVq1I5JqjlM4_wLbmxgqIykUW4&_nc_zt=24&_nc_ht=scontent.fsgn5-3.fna&_nc_gid=Uw1hq29JFVmyGkZ0NCkCAg&oh=00_AfEpHfrO1pQSXH9jiCyW82_CRsa1nalm57vLugNqE2Yyiw&oe=68297C9A" class="rounded-circle mb-3" alt="User 2" style="width: 100px; height: 100px; object-fit: cover;">
+                            <h5>Vũ Đức Thịnh</h5>
+                            <p class="text-muted">Chuyên gia bảo mật để tôi chóng mắt lên coi</p>
+                            <p class="small">“Đây là công cụ rất hữu ích để dạy và học về mã hóa. Mô phỏng chi tiết từng bước rất dễ hiểu. Giao diện dễ sử dụng, rất thích!”</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Feedback 3 -->
+                <div class="carousel-item">
+                    <div class="row justify-content-center">
+                        <div class="col-md-4 text-center">
+                            <img src="~/Content/Images/user3.jpg" class="rounded-circle mb-3" alt="User 3" style="width: 100px; height: 100px; object-fit: cover;">
+                            <h5>Lê Văn E</h5>
+                            <p class="text-muted">Giảng viên khoa Công nghệ thông tin</p>
+                            <p class="small">“Trang web này giúp tôi hiểu rõ hơn về thuật toán DES và các ứng dụng trong bảo mật. Giao diện dễ sử dụng, rất thích!”</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Controls -->
+            <button class="carousel-control-prev" type="button" data-bs-target="#feedbackCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#feedbackCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+    </div>
+</section>
+
+@*MAP*@
+<section class="py-5 bg-white">
+    <div class="container">
+        <h2 class="text-center mb-4"> Vị trí của chúng tôi</h2>
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <div class="map-container rounded shadow" style="overflow:hidden; padding-bottom:56.25%; position:relative; height:0;">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.0673478732897!2d106.62608531111103!3d10.806153889299953!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752be27d8b4f4d%3A0x92dcba2950430867!2zVHLGsOG7nW5nIMSQ4bqhaSBo4buNYyBDw7RuZyBUaMawxqFuZyBUUC4gSOG7kyBDaMOtIE1pbmggKEhVSVQp!5e0!3m2!1svi!2s!4v1744961253417!5m2!1svi!2s"
+                            width="100%" height="100%" style="border:0; position:absolute; top:0; left:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+@*FOOTER*@
+<footer class="bg-dark text-white py-4 mt-5">
+    <div class="container text-center">
+        <p class="mb-1">© 2025 - Nhóm phát triển hệ thống mã hóa DES ©</p>
+
+        <p class="mb-1 fw-semibold" style="font-size: 1.0rem;">
+            Tiến Đạt &nbsp;- Quốc Anh
+        </p>
+
+        <small class="text-secondary fst-italic">Website mô phỏng thuật toán DES phục vụ học tập và nghiên cứu chuyên sâu.</small>
+    </div>
+</footer>

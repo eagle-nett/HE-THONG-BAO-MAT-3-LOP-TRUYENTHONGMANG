@@ -1,0 +1,676 @@
+﻿@{
+    ViewBag.Title = "Hướng dẫn sử dụng";
+    Layout = "~/Views/Shared/Layout.cshtml";
+}
+
+<style>
+    .des-container {
+        max-width: 1200px;
+        margin: 40px auto;
+        padding: 30px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+        .des-container h2 {
+            color: #1a2b3c; /* Xanh đen đậm cho tiêu đề cấp cao */
+            margin-bottom: 25px;
+        }
+
+        .des-container h3 {
+            color: #3e5f7a; /* Xanh trung cho tiêu đề cấp trung */
+            margin-top: 25px;
+        }
+
+        .des-container h4 {
+            color: #4a6078; /* Xanh xám nhạt cho tiêu đề cấp thấp */
+            margin-top: 25px;
+        }
+
+        .des-container p, .des-container ul {
+            font-size: 18px;
+            line-height: 1.8;
+            color: #333;
+        }
+
+        .des-container ul {
+            padding-left: 20px;
+        }
+
+        .des-container a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+            .des-container a:hover {
+                text-decoration: underline;
+            }
+
+    .des-image {
+        max-width: 1000px; /* Chiều rộng tối đa */
+        max-width: 100%; /* Responsive với container cha */
+        width: auto; /* Giữ kích thước gốc */
+        height: auto; /* Giữ tỷ lệ */
+        object-fit: contain; /* Tránh kéo giãn */
+        margin: 20px auto;
+        display: block;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
+    .image-caption {
+        font-style: italic;
+        font-size: 16px;
+        color: #555;
+        text-align: center;
+        margin-top: -10px;
+        margin-bottom: 20px;
+    }
+
+    .step-container {
+        margin-bottom: 25px;
+    }
+
+    .step-description {
+        margin-bottom: 20px;
+    }
+
+    .step-table {
+        width: 100%;
+    }
+
+        .step-table table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .step-table th, .step-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        .step-table th {
+            background-color: #e9ecef;
+        }
+
+    .sbox-table {
+        margin-bottom: 20px;
+    }
+
+        .sbox-table td {
+            padding: 6px;
+            font-size: 13px;
+        }
+
+        .sbox-table th {
+            padding: 6px;
+            font-size: 13px;
+        }
+
+    .note {
+        background-color: #e7f3fe;
+        border-left: 4px solid #2196f3;
+        padding: 15px;
+        margin: 20px 0;
+        font-size: 16px;
+    }
+</style>
+
+<div class="des-container">
+    <h2>Hướng dẫn sử dụng công cụ mô phỏng mã hóa và giải mã DES</h2>
+    <p>
+        Công cụ này mô phỏng quy trình mã hóa và giải mã dữ liệu bằng thuật toán DES (Data Encryption Standard). Giao thức Diffie-Hellman được sử dụng để trao đổi khóa an toàn, kết hợp với chữ ký số để xác minh danh tính, ngăn chặn tấn công man-in-the-middle (MITM). Người dùng nhập hai số bí mật (<code>a</code> và <code>b</code>) để tạo khóa chung, sau đó khóa này được băm bằng MD5 (lấy 16 ký tự HEX đầu tiên) để tạo khóa DES. Quy trình bao gồm:
+    </p>
+    <div class="step-container">
+        <ul>
+            <li><strong>Bước 1:</strong> Trao đổi khóa công khai Diffie-Hellman.</li>
+            <li><strong>Bước 2:</strong> Tạo cặp khóa RSA cho chữ ký số.</li>
+            <li><strong>Bước 3:</strong> Xác minh danh tính người gửi qua chữ ký số.</li>
+            <li><strong>Bước 4:</strong> Băm khóa chung bằng MD5 để tạo khóa DES.</li>
+            <li><strong>Bước 5:</strong> Mã hóa hoặc giải mã dữ liệu bằng DES, hỗ trợ định dạng ASCII, HEX và BIN.</li>
+        </ul>
+        <div class="note">
+            <strong>Lưu ý:</strong> Việc nhập cả hai số bí mật <code>a</code> và <code>b</code> chỉ dành cho mục đích mô phỏng. Trong thực tế, mỗi bên chỉ giữ số bí mật của mình và trao đổi khóa công khai qua kênh liên lạc.
+        </div>
+    </div>
+
+    <h3>1. Tạo khóa với Diffie-Hellman</h3>
+    <div class="step-container">
+        <div class="step-description">
+            <p>
+                Công cụ cho phép mô phỏng giao thức Diffie-Hellman bằng cách nhập cả hai số bí mật (<code>a</code> và <code>b</code>) để tính toán khóa công khai và khóa chung. Quy trình bao gồm:
+            </p>
+            <ul>
+                <li>
+                    <strong>Bước 1: Nhập tham số Diffie-Hellman</strong>
+                    <div class="step-description">
+                        <ul>
+                            <li>Nhập số nguyên tố <code>p</code> và số nguyên <code>g</code> (generator). Công cụ có thể cung cấp giá trị mặc định.</li>
+                            <li>Nhập số bí mật của hai bên: <code>a</code> và <code>b</code>.</li>
+                            <li>
+                                Ví dụ:
+                                <div class="step-table">
+                                    <table>
+                                        <tr>
+                                            <th>Tham số</th>
+                                            <th>Giá trị</th>
+                                        </tr>
+                                        <tr>
+                                            <td><code>p</code></td>
+                                            <td>23</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>g</code></td>
+                                            <td>5</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Số bí mật <code>a</code></td>
+                                            <td>18</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Số bí mật <code>b</code></td>
+                                            <td>7</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <img src="~/img/dfhm.jpg" class="des-image" alt="Giao diện nhập tham số Diffie-Hellman">
+                    <div class="image-caption">Giao diện nhập tham số Diffie-Hellman trong công cụ.</div>
+                </li>
+                <li>
+                    <strong>Bước 2: Tính khóa công khai và khóa chung</strong>
+                    <div class="step-description">
+                        <ul>
+                            <li>
+                                Khóa công khai:
+                                <div class="step-table">
+                                    <table>
+                                        <tr>
+                                            <th>Khóa</th>
+                                            <th>Công thức</th>
+                                            <th>Ví dụ</th>
+                                        </tr>
+                                        <tr>
+                                            <td><code>A</code></td>
+                                            <td><code>g^a mod p</code></td>
+                                            <td><code>5^18 mod 23 = 6</code></td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>B</code></td>
+                                            <td><code>g^b mod p</code></td>
+                                            <td><code>5^7 mod 23 = 17</code></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </li>
+                            <li>
+                                Khóa chung:
+                                <div class="step-table">
+                                    <table>
+                                        <tr>
+                                            <th>Khóa</th>
+                                            <th>Công thức</th>
+                                            <th>Ví dụ</th>
+                                        </tr>
+                                        <tr>
+                                            <td><code>K</code></td>
+                                            <td><code>A^b mod p = B^a mod p</code></td>
+                                            <td><code>17^18 mod 23 = 6^7 mod 23 = 3</code></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+            <img src="~/img/kqdfhm.jpg" class="des-image" alt="Giao diện tính toán Diffie-Hellman">
+            <div class="note">
+                <strong>Lưu ý:</strong> Trong mô phỏng, bạn nhập cả <code>a</code> và <code>b</code> để thấy toàn bộ quy trình từ tính khóa công khai đến khóa chung. Trong thực tế, <code>b</code> là bí mật của đối phương và không được chia sẻ, khóa công khai trước khi gửi cho người nhận cần phải được thực hiện cùng chữ ký số để xác minh.
+            </div>
+        </div>
+    </div>
+
+    <h3>2. Tạo cặp khóa RSA cho chữ ký số</h3>
+    <div class="step-container">
+        <div class="step-description">
+            <p>
+                Trước khi xác minh chữ ký số, cần tạo cặp khóa RSA gồm khóa công khai và khóa riêng để sử dụng trong quá trình ký và xác minh danh tính. Khóa riêng được giữ bí mật, còn khóa công khai được chia sẻ để xác minh chữ ký.
+            </p>
+            <ul>
+                <li>
+                    <strong>Bước 1: Tạo cặp khóa RSA</strong>
+                    <div class="step-description">
+                        <ul>
+                            <li>Chọn hai số nguyên tố lớn <code>p</code> và <code>q</code> (ví dụ: <code>p = 61</code>, <code>q = 53</code>).</li>
+                            <li>Tính <code>n = p * q</code> và hàm Euler <code>φ(n) = (p-1) * (q-1)</code>.</li>
+                            <li>Chọn số nguyên <code>e</code> sao cho <code>1 < e < φ(n)</code> và <code>e</code> nguyên tố cùng nhau với <code>φ(n)</code>.</li>
+                            <li>Tính <code>d</code> sao cho <code>d * e ≡ 1 mod φ(n)</code>.</li>
+                            <li>
+                                Kết quả:
+                                <div class="step-table">
+                                    <table>
+                                        <tr>
+                                            <th>Tham số</th>
+                                            <th>Ví dụ</th>
+                                        </tr>
+                                        <tr>
+                                            <td><code>n</code></td>
+                                            <td><code>61 * 53 = 3233</code></td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>φ(n)</code></td>
+                                            <td><code>(61-1) * (53-1) = 3120</code></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Khóa công khai</td>
+                                            <td><code>(e, n) = (17, 3233)</code></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Khóa riêng</td>
+                                            <td><code>(d, n) = (2753, 3233)</code></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                <li>
+                    <strong>Bước 2: Lưu và chia sẻ khóa</strong>
+                    <div class="step-description">
+                        <ul>
+                            <li>Lưu khóa riêng <code>(d, n)</code> ở nơi an toàn, không chia sẻ.</li>
+                            <li>Chia sẻ khóa công khai <code>(e, n)</code> với đối phương để họ sử dụng trong xác minh chữ ký.</li>
+                        </ul>
+                    </div>
+                </li>
+                <li>
+                    <strong>Bước 3: Nhấn nút "Tạo khóa RSA"</strong>
+                    <div class="step-description">
+                        <ul>
+                            <li>Công cụ sẽ hiển thị cặp khóa RSA (<code>e, n</code> và <code>d, n</code>).</li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+            <img src="~/img/rsa.jpg" class="des-image" alt="Giao diện tính toán RSA">
+            <div class="note">
+                <strong>Lưu ý:</strong> Trong thực tế, các số nguyên tố <code>p</code> và <code>q</code> phải rất lớn (thường 2048 bit hoặc hơn) để đảm bảo an toàn. Trong mô phỏng, các số nhỏ được dùng để đơn giản hóa.
+            </div>
+        </div>
+    </div>
+
+    <h3>3. Xác minh người gửi bằng chữ ký số</h3>
+    <div class="step-container">
+        <div class="step-description">
+            <p>
+                Để đảm bảo khóa công khai từ <code>A</code> gửi đến <code>B</code> đáng tin cậy, công cụ sử dụng chữ ký số để xác minh danh tính.
+            </p>
+            <ul>
+                <li>
+                    <strong>Bước 1: Nhận chữ ký số</strong>
+                    <div class="step-description">
+                        <ul>
+                            <li>Người gửi (A) sẽ gửi khóa công khai kèm chữ ký số (tạo bằng thuật toán RSA với khóa riêng) cho người nhận (B).</li>
+                            <li>Chữ ký số (S) là 1 giá trị được tạo bằng cách ký thông điệp (trong ví dụ này thông điệp là khóa công khai của giao thức Diffie Helman ở phần 1)</li>
+                        </ul>
+                        <img src="~/img/kyso.jpg" class="des-image" alt="Ký số">
+                        <p>Kết quả nhận được: S = m^d mod n = 6^2753 mod 3233 = 2902 (đây là chữ ký) </p>
+                        <p>Người gửi (A) sẽ gửi khóa công khai diffie-helman và chữ ký cho (B): (6,2902)</p>
+                    </div>
+                </li>
+
+                <li>
+                    <strong>Bước 2: Nhập thông tin xác minh</strong>
+                    <div class="step-description">
+                        <ul>
+                            <li>Người nhận B sau khi nhận được thông điệp (khóa công khai diffie-helman) và chữ ký từ A (6,2902) sẽ kiểm xác minh bằng khóa công khai của A.</li>
+      
+                            <li>
+                                Ví dụ:
+                                <div class="step-table">
+                                    <table>
+                                        <tr>
+                                            <th>Tham số</th>
+                                            <th>Giá trị</th>
+                                        </tr>
+                                        <tr>
+                                            <td>Thông điệp cần xác minh</td>
+                                            <td>6</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Chữ ký số</td>
+                                            <td>2902</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Khóa công khai RSA</td>
+                                            <td><code>(e, n) = (17, 3233)</code></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                <li>
+                    <strong>Bước 3: Thực hiện kiểm tra</strong>
+                    <img src="~/img/xacminh.jpg" class="des-image" alt="Xác minh">
+                    <p>Kết quả nhận được: m = s^e mod n = 2902^17 mod 3233 = 6 (kết quả sau khi xác minh chữ ký trùng khớp với nội dung mà A gửi) -> thông điệp không bị thay đổi </p>
+                </li>
+            </ul>
+            <div class="note">
+                <strong>Lưu ý:</strong> Nếu xác minh thất bại (kết quả khi xác minh chữ ký không trùng khớp với thông điệp), thì không sử dụng vì có thể thông điệp đã bị tấn công MITM.
+            </div>
+        </div>
+    </div>
+
+    <h3>4. Tính toán và băm khóa chung</h3>
+    <div class="step-container">
+        <div class="step-description">
+            <p>
+                Sau khi xác minh <code>B</code>, công cụ băm khóa chung bằng MD5 để tạo khóa DES.
+            </p>
+            <ul>
+                <li>
+                    <strong>Bước 1: Khóa chung</strong>
+                    <div class="step-description">
+                        <ul>
+                            <li>Khóa chung <code>K</code> đã được tính ở bước 1 (<code>K = 3</code>).</li>
+                        </ul>
+                    </div>
+                </li>
+                <li>
+                    <strong>Bước 2: Băm khóa chung bằng MD5</strong>
+                    <div class="step-description">
+                        <ul>
+                            <li>Công cụ băm <code>K</code> bằng MD5 (vì thuật toán DES cần dữ liệu đầu vào có độ dài 64 bit tương ứng 8 byte) lấy 16 ký tự HEX đầu tiên (8 byte) làm khóa DES.</li>
+                            <img src="~/img/md5.jpg" class="des-image" alt="Hàm băm MD5">
+                            <li>
+                                <div class="step-table">
+                                    <table>
+                                        <tr>
+                                            <th>Thao tác</th>
+                                            <th>Giá trị</th>
+                                        </tr>
+                                        <tr>
+                                            <td>Khóa chung <code>K</code></td>
+                                            <td>3</td>
+                                        </tr>
+                                        <tr>
+                                            <td>MD5(<code>K</code>)</td>
+                                            <td>eccbc87e4b5ce2fe28308fd9f2a7baf3</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Khóa DES</td>
+                                            <td>eccbc87e4b5ce2fe</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <h3>5. Mã hóa dữ liệu với DES</h3>
+    <div class="step-container">
+        <div class="step-description">
+            <p>
+                Sử dụng khóa DES để mã hóa thông điệp. Quy trình bao gồm:
+            </p>
+            <ul>
+                <li>
+                    <strong>Bước 1: Nhập thông điệp (Plaintext)</strong>
+                    <div class="step-description">
+                        <ul>
+                            <li>Chọn định dạng: ASCII, HEX, hoặc BIN.</li>
+                            <li>
+                                Ví dụ:
+                                <div class="step-table">
+                                    <table>
+                                        <tr>
+                                            <th>Định dạng</th>
+                                            <th>Giá trị</th>
+                                        </tr>
+                                        <tr>
+                                            <td>ASCII</td>
+                                            <td>Là dạng chữ (Chỉ hỗ trợ tiếng Anh) như "Hello".</td>
+                                        </tr>
+                                        <tr>
+                                            <td>HEX</td>
+                                            <td>Là dạng mã hóa thành số kiểu hệ 16, từ 0-9 và A-F. Ví dụ: eccbc87e4b5ce2fe </td>
+                                        </tr>
+                                        <tr>
+                                            <td>BIN</td>
+                                            <td>Là dạng chỉ dùng 0 và 1. Ví dụ: 1110110011001011110010000111111001001011010111001110001011111110</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                <li>
+                    <strong>Bước 2: Nhập khóa DES</strong>
+                    <div class="step-description">
+                        <ul>
+                            <li>Chọn định dạng: ASCII, HEX, hoặc BIN.</li>
+                            <li>Nhập khóa DES từ bước 4 <code>eccbc87e4b5ce2fe</code> khóa này ở dạng HEX.</li>
+                        </ul>
+                    </div>
+                </li>
+                <li>
+                <li>
+                    <strong>Bước 3: Nhấn nút "Xử lý dữ liệu"</strong>
+                    <div class="step-description">
+                        <img src="~/img/Mahoa.jpg" class="des-image" alt="Mã hóa DES">
+                        <img src="~/img/kqmahoa.jpg" class="des-image" alt="Kết quả mã hóa DES">
+                        <ul>
+
+                            <li>
+
+                                <div class="step-table">
+                                    <table>
+                                        <tr>
+                                            <th>Đầu vào</th>
+                                            <th>Giá trị</th>
+                                        </tr>
+                                        <tr>
+                                            <td>Thông điệp cần mã hóa</td>
+                                            <td>Hello (Ascii).</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Khóa</td>
+                                            <td>eccbc87e4b5ce2fe (Hex) </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Kết quả:</td>
+                                            <td>D845C0056A740A0A (Hex)<br />1101100001000101110000000000010101101010011101000000101000001010 (BIN)</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+            <div class="note">
+                <strong>Lưu ý:</strong> Thông điệp nếu dài hơn 64 bit sẽ được chia thành các khối 64 bit (các khối không đủ sẽ được padding). Kết quả sau khi mã hóa sẽ ở dạng Hex hoặc Bin, dùng dạng nào để giải mã cũng được.
+            </div>
+        </div>
+    </div>
+
+    <h3>6. Giải mã dữ liệu với DES</h3>
+    <div class="step-container">
+        <div class="step-description">
+            <p>
+                Sử dụng khóa DES để giải mã bản mã. Quy trình bao gồm:
+            </p>
+            <ul>
+                <li>
+                    <strong>Bước 1: Nhập bản mã (Ciphertext)</strong>
+                    <div class="step-description">
+                        <ul>
+                            <li>Chọn định dạng: HEX hoặc BIN.</li>
+                            <li> <code>D845C0056A740A0A</code> (HEX).</li>
+                        </ul>
+                    </div>
+                </li>
+                <li>
+                    <strong>Bước 2: Nhập khóa DES</strong>
+                    <div class="step-description">
+                        <ul>
+                            <li>Nhập khóa DES giống bước mã hóa<code> eccbc87e4b5ce2fe</code>.</li>
+                        </ul>
+                    </div>
+                </li>
+                <li>
+                    <strong>Bước 3: Nhấn nút "Xử lý dữ liệu"</strong>
+                    <div class="step-description">
+                        <img src="~/img/giaima.jpg" class="des-image" alt="Giải mã thuật toán DES">
+                        <img src="~/img/kqgiaima.jpg" class="des-image" alt="Kết quả giải mã DES">
+                        <ul>
+
+                            <li>
+
+                                <div class="step-table">
+                                    <table>
+                                        <tr>
+                                            <th>Đầu vào</th>
+                                            <th>Giá trị</th>
+                                        </tr>
+                                        <tr>
+                                            <td>Thông điệp cần giải mã</td>
+                                            <td>D845C0056A740A0A (Hex).</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Khóa</td>
+                                            <td>eccbc87e4b5ce2fe (Hex) </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Kết quả:</td>
+                                            <td>48656C6C6F000000 (Hex)<br />0100100001100101011011000110110001101111000000000000000000000000 (BIN)<br />Hello (Ascii)</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+
+    <h3>7. Minh họa toàn bộ quy trình</h3>
+    <div class="step-container">
+        <div class="step-description">
+            <p>
+                Dưới đây là toàn bộ quy trình:
+            </p>
+            <div class="step-table">
+                <table>
+                    <tr>
+                        <th>Thao tác</th>
+                        <th>Đầu vào</th>
+                        <th>Đầu ra</th>
+                    </tr>
+                    <tr>
+                        <td>Tạo khóa Diffie-Hellman</td>
+                        <td>
+                            <code>p = 23</code>, <code>g = 5</code><br />
+                            Số bí mật: <code>a = 18</code>, <code>b = 7</code>
+                        </td>
+                        <td>
+                            Khóa công khai: <code>A = 6</code>, <code>B = 17</code><br />
+                            Khóa chung: <code>K = 3</code>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Tạo khóa RSA</td>
+                        <td>
+                            Số nguyên tố: <code>p = 61</code>, <code>q = 53</code><br />
+                            <code>e = 17</code>
+                        </td>
+                        <td>
+                            Khóa công khai: <code>(e, n) = (17, 3233)</code><br />
+                            Khóa riêng: <code>(d, n) = (2753, 3233)</code>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Tạo chữ ký số</td>
+                        <td>
+                            Khóa bí mật (RSA) của <code>A = 2753</code>, dữ liệu cần ký là khóa công khai (Diffie-helman) của <code>A = 6</code>
+                        </td>
+                        <td>
+                            S = m^d mod n = 6^2753 mod 3233 = <code>2902</code>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Xác minh chữ ký</td>
+                        <td>
+                            Khóa công khai (RSA) của <code>A = (17,3233)</code>, chữ ký số<code> S = 2902</code>
+                        </td>
+                        <td>
+                            m = s^e mod n = 2902^17 mod 3233 = <code>6</code> -> Xác minh thành công
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Tạo khóa DES</td>
+                        <td>
+                            Khóa chung: <code>K = 3</code>
+                        </td>
+                        <td>
+                            Khóa DES: <code>eccbc87e4b5ce2fe</code> (16 ký tự HEX đầu của MD5)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Mã hóa</td>
+                        <td>
+                            Bản rõ: <code>Hello</code> (ASCII)<br />
+                            Khóa: <code>eccbc87e4b5ce2fe</code> (HEX)
+                        </td>
+                        <td>
+                            Bản mã: <code>D845C0056A740A0A</code> (HEX)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Giải mã</td>
+                        <td>
+                            Bản mã: <code>D845C0056A740A0A</code> (HEX)<br />
+                            Khóa: <code>eccbc87e4b5ce2fe</code> (HEX)<br />
+                        </td>
+                        <td>
+                            Bản rõ: <code>Hello</code> (ASCII)
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <h3>8. Lưu ý quan trọng</h3>
+    <div class="step-container">
+        <div class="step-description">
+            <ul>
+                <li>Đây là công cụ mô phỏng, cho phép nhập cả <code>a</code> và <code>b</code> để minh họa Diffie-Hellman. Trong thực tế, chỉ chia sẻ khóa công khai (<code>A</code>, <code>B</code>), không chia sẻ số bí mật.</li>
+                <li>Khóa RSA phải được tạo với số nguyên tố lớn (2048 bit hoặc hơn) để đảm bảo an toàn trong thực tế.</li>
+                <li>Luôn xác minh chữ ký số để đảm bảo khóa công khai là đáng tin cậy.</li>
+                <li>MD5 được dùng trong mô phỏng để đơn giản hóa, nhưng không an toàn cho ứng dụng thực tế.</li>
+            </ul>
+        </div>
+    </div>
+
+    <p>
+        <a href="@Url.Action("Index", "Home")">Quay lại trang chủ</a>
+    </p>
+</div>
